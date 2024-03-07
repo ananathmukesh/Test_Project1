@@ -15,7 +15,7 @@ import axios from 'axios';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { serverUrl } from '../../config/ServerUrl';
 import { useEffect } from 'react';
-
+import comnpanyLogo from '../../assets/Images/LogoKCPL.png'
 
 
 
@@ -30,8 +30,6 @@ const getPath = (index) =>{
     case 1:
       return '/group'
 
-    case 2:
-      return '/call'
 
     case 3:
       return '/settings'
@@ -157,12 +155,12 @@ const SideBar = () => {
         sx={{ width: "100%" , height: "100%"}} spacing={3}>
           <Stack alignItems={"center"} spacing={4}>
           <Box sx={{
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: 'white',
             height: 64,
             width: 64,
             borderRadius: 1.5
           }}>
-            <img src={`https://i.pinimg.com/564x/b7/7f/43/b77f43e708a4cd664a7405c21f8302ca.jpg`} alt={'Logo icon'} />
+            <img src={comnpanyLogo} alt={'Logo icon'} />
           </Box>
           <Stack sx={{ width: "max-content" }} direction="column" alignItems="center" spacing={3}>
             {Nav_Buttons.map((el) => (

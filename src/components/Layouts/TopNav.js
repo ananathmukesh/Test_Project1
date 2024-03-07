@@ -22,6 +22,8 @@ import {toast} from "react-toastify";
 import {useDispatch} from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import serverUrl from '../../config/ServerUrl';
+import { LoggedUser } from '../../redux/slices/app';// Import your slice actions
+import { loginUser, logoutUser } from '../../reducers/authActions';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -103,11 +105,11 @@ console.log(`${serverUrl}/logout`);
       console.log(res.data.data.message);
       if(res.data){
         if(res.data.code==200){
-            window.localStorage.removeItem('auth');
-          dispatch({
-              type: 'LOGOUT',
-              payload: res.data.data
-          });
+          
+          dispatch(logoutUser());
+
+
+
           navigate('/signin');
          toast.success(res.data.data.message);
         } else{

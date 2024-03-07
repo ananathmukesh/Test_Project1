@@ -16,13 +16,11 @@ import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-toastify";
-import { ToggleSidebar, UpdateSidebarType } from '../../redux/slices/app';
-import { LoggedUser } from "../../redux/slices/app";
-import ToggleSidebar1 from '../../redux/slices/app';
+
 import {useDispatch} from 'react-redux';
 import { serverUrl } from "../../config/ServerUrl";
-
-
+import { loginUser, logoutUser } from '../../reducers/authActions';
+import { useSelector } from "react-redux";
 
 
 const MadeWithLove = () => (
@@ -90,7 +88,12 @@ const SignIn = () => {
       if(res.data){
         if(res.data.code==200){
           window.localStorage.setItem('auth',JSON.stringify(res.data.data));
-         dispatch(LoggedUser());
+        
+
+             // Assuming you get user data from a login API or elsewhere
+           const userData = { username: 'exampleUser', email: 'user@example.com' };
+          dispatch(loginUser(userData));
+
           navigate('/app');
          toast.success(res.data.data.message);
         } else{
@@ -101,11 +104,12 @@ const SignIn = () => {
 
     } catch (err) {
       console.log('err',err);
-      toast.error('Failed. '+err.response.data.data.message);
+      toast.error('Failed. '+err);
     }
   }
+  const reduxuser = useSelector((state) => state.app).user;
 
-  console.log(data);
+  console.log(reduxuser);
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -123,7 +127,6 @@ const SignIn = () => {
             <TextField
               variant="outlined"
               margin="normal"
-              required
               fullWidth
               id="email"
               label="Email Address"

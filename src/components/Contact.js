@@ -9,6 +9,7 @@ import AntSwitch from './AntSwitch';
 import '../css/global.css';
 import axios from 'axios';
 import { serverUrl } from '../config/ServerUrl';
+import BasicTable from '../utils/Table';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

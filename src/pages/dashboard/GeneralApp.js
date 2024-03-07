@@ -7,7 +7,6 @@ import { IconButton, Button, Divider, Tooltip } from "@mui/material";
 import { ArchiveBox, CircleDashed, MagnifyingGlass } from "phosphor-react";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { ChatList } from "../../data";
 import {
   Search,
   SearchIconWrapper,
@@ -38,32 +37,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import ShareLocationIcon from "@mui/icons-material/ShareLocation";
 import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
-import Emoji from "../../utils/emojpicker";
-import KeyboardDoubleArrowDownSharpIcon from "@mui/icons-material/KeyboardDoubleArrowDownSharp";
 import Welcome from "../../utils/WelcomePage";
-import { PacmanLoader } from 'react-spinners';
-import AudioRecorder from "../../utils/mic_reactjs";
-
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
-import ReactEmoji from 'react-emoji-render';
-import Todos from "../../utils/todo";
-
 import io from "socket.io-client";
-
-
 import { BsEmojiSmile } from "react-icons/bs";
-import { AiOutlinePlus } from "react-icons/ai";
-import BasicExample from "../../utils/inputfields";
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
-import EmojiPicker from "../../utils/emojpicker";
-import Options from "../../components/options/options.component";
-import Notifications from "../../components/notifications/notifications.component";
-import VideoPlayer from "../../components/videoplayer/videoPlayer.component";
 import { SocketContext } from '../../context'
 import { useContext } from "react";
-import PhoneIcon from '@mui/icons-material/Phone';
 import Loader from "../../utils/loader";
 
 
@@ -520,7 +500,7 @@ const GeneralApp = () => {
 
   const { answerCall, call, callAccepted, me } = useContext(SocketContext)
   
- console.log('genral page',me);
+
   
   const theme = useTheme();
   const navigate = useNavigate();
@@ -542,6 +522,7 @@ const GeneralApp = () => {
 
   const [inputValue, setInputValue] = useState("");
   const [chatmasterid, setChatmasterid] = useState("");
+
   const [joinchatmaster, setJoinchatmaster] = useState("");
   const [profileImg, setProfileImg] = useState("");
   const [dpname, setDpname] = useState("");
@@ -618,6 +599,10 @@ const GeneralApp = () => {
       
     };
   
+
+  
+
+
     const handleInputChange = (e) => {
       const newText = e.target.value;
       setText(newText);
@@ -729,6 +714,7 @@ const GeneralApp = () => {
           formData.append("image", SelectedImg);
           formData.append("audio", Togetblob.blobURL);
           formData.append("reply", "");
+          formData.append("Msgtype", "User");
     
           const axiosInstance = axios.create({
             headers: {
@@ -834,23 +820,21 @@ useEffect(() => {
 }, [loading,scrollbarsRef,offscroolbar])
 
   
-  console.log(offscroolbar);
 
   useEffect(() => {
-    // socket.on('receive_message', (data) => {
-    //   if(data){
-    //     OnclickfetchSenderReceiverMsg(chatmasterid,userid);
-    //   }
-    //  }
-    //  )
-
     const authData = JSON.parse(localStorage.getItem("auth"));
 
     if (authData) {
-      // Use the retrieved data as needed
+    
       setUsername(authData.user.id);
       setUsers(authData.user)
     }
+
+    const currentUrl = window.location.href;
+    const urlParts = currentUrl.split('/');
+    const groupValue = urlParts[urlParts.length - 1];
+
+    
 
     const fetchData = async () => {
       try {
@@ -1159,6 +1143,7 @@ useEffect(() => {
       formData.append("image", SelectedImg);
       formData.append("audio", Togetblob.blobURL);
       formData.append("reply", "");
+      formData.append("Msgtype", "User");
 
       const axiosInstance = axios.create({
         headers: {
@@ -1306,14 +1291,14 @@ useEffect(() => {
     e.preventDefault();
     setOpenReplyModel(1);
     setReplydata(data);
-    // console.log("handel reply message");
+   
     setDbsubtype('reply');
     
   };
 
 
 const handlesendReply = async(e) => {
-  // console.log('replyt send successfully');
+ console.log('replyt send successfully',Replydata.img);
   e.preventDefault();
     try {
       const axiosInstance = axios.create({
@@ -1342,9 +1327,11 @@ const handlesendReply = async(e) => {
       formData.append("outgoing", true); // Use boolean value instead of string
       formData.append("subtype", Dbsubtype);
       formData.append("chatmaster_id", chatmasterid);
-      formData.append("image", SelectedImg);
+      formData.append("image", Replydata.img);
       formData.append("audio", '');
       formData.append("reply", inputValue);
+      formData.append("Msgtype", "User");
+
       const res = await axiosInstance.post(
         `${chatserverUrl}/msgconversation`,
         formData
@@ -1397,6 +1384,7 @@ const handlecallRequest = async(e) => {
     formData.append("audio", '');
     formData.append("reply", "");
     formData.append("call_request", me);
+    formData.append("Msgtype", "User");
 
     const axiosInstance = axios.create({
       headers: {
@@ -1442,7 +1430,7 @@ const handlecallRequest = async(e) => {
 
  const handleAudiocallRequest = async(e) => {
   e.preventDefault();
-    console.log('audio call request');
+   
       try {
     const currentTime = new Date();
     const hours = currentTime.getHours();
@@ -1468,6 +1456,7 @@ const handlecallRequest = async(e) => {
     formData.append("audio", '');
     formData.append("reply", "");
     formData.append("call_request", me);
+    formData.append("Msgtype", "User");
 
     const axiosInstance = axios.create({
       headers: {
@@ -1582,8 +1571,8 @@ const handlecallRequest = async(e) => {
 
 
 const handleForwardmessage = async(e) => {
-  // console.log(ForwardData);
-  // console.log(msgForwardData);
+ 
+
   e.preventDefault();
   try {
     const axiosInstance = axios.create({
@@ -1615,6 +1604,8 @@ const handleForwardmessage = async(e) => {
     formData.append("image", SelectedImg);
     formData.append("audio", '');
     formData.append("reply", inputValue);
+    formData.append("Msgtype", "User");
+
     const res = await axiosInstance.post(
       `${chatserverUrl}/msgconversation`,
       formData
@@ -1755,7 +1746,7 @@ const handleForwardmessage = async(e) => {
         msgdate: EditData.date_added,
       };
 
-      // console.log("edit data form data", formData);
+      
       const res = await axios.post(
         `${chatserverUrl}/editConversation`,
         formData
@@ -1781,7 +1772,7 @@ const handleForwardmessage = async(e) => {
 
   const openContactlist = (data) => {
     setMsgForwardData(data);
-    // console.log("open contact list");
+    
     setOpenContactlist(1);
     setDbsubtype('forward');
   };
@@ -1805,9 +1796,7 @@ const handleForwardmessage = async(e) => {
       values.top !== undefined &&
       values.top >= 0.9996941709372611
     ) {
-      // console.log("Scroll position from the top:", values.top);
-
-      // Check if the user has scrolled to the bottom (adjust threshold as needed)
+      
       const isAtBottom = values.top >= 0.95;
 
       if (isAtBottom) {
@@ -1817,7 +1806,7 @@ const handleForwardmessage = async(e) => {
   };
 
   const handleDownarrow = () => {
-    // console.log("down arrow");
+    
     scrollbarsRef.current.scrollToBottom({ behavior: "smooth" });
     
   };
@@ -1841,7 +1830,7 @@ const handleForwardmessage = async(e) => {
 
   
 
-  // console.log('fetched chatmaster id idb',chatmasterid);
+  
   return (
     <Stack direction="row" sx={{ width: "100%" }}>
       {/* Chats */}
@@ -1858,15 +1847,7 @@ const handleForwardmessage = async(e) => {
         }}
       >
         <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <IconButton>
-              <CircleDashed />
-            </IconButton>
-          </Stack>
+         
 
           <Stack sx={{ width: "100%" }}>
             <Search>

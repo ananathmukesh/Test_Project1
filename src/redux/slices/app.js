@@ -28,7 +28,7 @@ const slice = createSlice({
         LoggedUser(state, action) {
             state.user = Auth.user ? Auth.user : null;
           },
-        logout(state, action){
+        Logout(state, action){
             state.user = null;
         }
         
@@ -57,7 +57,7 @@ export function SetLogout() {
     localStorage.removeItem("auth");
 
     // Dispatch the logout action
-    dispatch(slice.actions.logout());
+    dispatch(slice.actions.Logout());
   };
 }
 

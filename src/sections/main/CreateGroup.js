@@ -12,14 +12,18 @@ import { useEffect } from 'react';
 import { serverUrl } from '../../config/ServerUrl';
 import ChatElement from '../../components/ChatElement';
 import GroupChatElement from '../../components/GroupChatlist';
+import SearchIcon from '@mui/icons-material/Search';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 const MEMBERS = ['Name 1', 'Name 2', 'Name 3' ];
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-const CreateGroupForm = ({handleClose}) =>{
+const CreateGroupForm = ({setOpenDialog}) =>{
 
 
   const [data,setData] = useState([]);
@@ -74,41 +78,61 @@ const CreateGroupForm = ({handleClose}) =>{
    }, [])
    
 
-
+   const inputStyle = {
+    width: '367px',
+    height: '32px',
+    background: '#fcfcfc',
+    border: '1px solid #aaa',
+    borderRadius: '5px',
+    boxShadow: '0 0 3px #ccc, 0 10px 15px #ebebeb inset',
+    textIndent: '32px'
+  };
+  
    return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+     <div className="search" style={{
+      display:"flex"
+     }}>
+      <SearchIcon />
+      <input placeholder="Search Users" style={inputStyle} />
+    </div>
       <Stack spacing={3}>
-         {
-          data.map((el)=>(
-            <GroupChatElement
-               key={el.id}
-               {...el}
-               datas={el}
-            />
-          ))
-         }
+      <GroupChatElement setOpenDialog={setOpenDialog} />
         <Stack spacing={2} direction='row' alignItems='center' justifyContent='end'>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type='submit' variant='contained'>
-            Add Group
-          </Button>
+         
         </Stack>
       </Stack>
     </FormProvider>
    )
 };
 
-const CreateGroup = ({open, handleClose}) => {
+const CreateGroup = ({open, handleClose,setOpenDialog}) => {
+
+
+
+
+
   return (
-    <Dialog fullWidth maxWidth='xs' open={open} TransitionComponent={Transition} keepMounted sx={{p:4}}>
-        {/* Title */}
-        <DialogTitle sx={{mb:3}}>Create New Group</DialogTitle>
-        {/* Content */}
-        <DialogContent>
-          {/* Form */}
-          <CreateGroupForm handleClose/>
-        </DialogContent>
-    </Dialog>
+    <Dialog fullWidth maxWidth='xs' open={open} TransitionComponent={Transition} keepMounted sx={{ p: 4 }}>
+  {/* Title with Close Icon */}
+  <DialogTitle sx={{ mb: 3 }}>
+    Create New Group 
+    <IconButton
+      edge="end"
+      color="inherit"
+      onClick={()=>setOpenDialog(!open)}
+      aria-label="close"
+      sx={{ position: 'absolute', right: 0, top: 0,marginRight:'10px',marginTop:"20px" }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  {/* Content */}
+  <DialogContent>
+    {/* Form */}
+    <CreateGroupForm handleClose={handleClose} setOpenDialog={setOpenDialog}/>
+  </DialogContent>
+</Dialog>
   )
 }
 

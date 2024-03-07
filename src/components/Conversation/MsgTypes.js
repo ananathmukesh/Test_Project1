@@ -1,17 +1,11 @@
-import {
-  Box,
-  Stack,
-  Typography,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Box, Stack, Typography, Menu, MenuItem } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { DotsThreeVertical, DownloadSimple, Image } from "phosphor-react";
 import React from "react";
 import { senderreceiverImg, senderreceiverVideo } from "../../config/ServerUrl";
 import ReactPlayer from "react-player";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import ForwardIcon from '@mui/icons-material/Forward';
+import ForwardIcon from "@mui/icons-material/Forward";
 import AudiosBlob from "../../utils/audio";
 import { useState } from "react";
 import Lightbox from "react-image-lightbox";
@@ -21,11 +15,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { useRef } from "react";
 import { senderreceiverDoc } from "../../config/ServerUrl";
-import AddIcCallIcon from '@mui/icons-material/AddIcCall';
+import AddIcCallIcon from "@mui/icons-material/AddIcCall";
 import { useNavigate } from "react-router-dom";
-import VideoCallIcon from '@mui/icons-material/VideoCall';
+import VideoCallIcon from "@mui/icons-material/VideoCall";
 import Downloader from "../../utils/downloadloader";
 import VideoDownloader from "../../utils/Videodownloadloader";
+import { useEffect } from "react";
+import axios from "axios";
+import { chatserverUrl } from "../../config/ServerUrl";
 
 const DocMsg = ({
   el,
@@ -39,10 +36,10 @@ const DocMsg = ({
   handleUnstar,
   handleEdit,
   openContactlist,
-  senderid
+  senderid,
 }) => {
   const theme = useTheme();
-
+  const [receiverimg, setReceiverimg] = useState("");
   const openPdf = () => {};
 
   const highlightText = (text, searchTerm) => {
@@ -57,9 +54,28 @@ const DocMsg = ({
     );
   };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
+
   const openDocs = () => {
-    console.log('open docs');
-  }
+    
+  };
 
   const textRef = useRef(null);
   const handleCopyClick = async () => {
@@ -69,9 +85,6 @@ const DocMsg = ({
       try {
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
-
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
@@ -80,16 +93,38 @@ const DocMsg = ({
   };
 
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"} onClick={openDocs}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+      onClick={openDocs}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
+
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Stack spacing={2}>
@@ -104,38 +139,39 @@ const DocMsg = ({
             }}
             onClick={openDocs}
           >
-    <iframe
-  src={`${senderreceiverDoc}/${el.img}`}
-  width="100%"
-  height="300px"
-  title="Document Viewer"
-  style={{
-    zoom: 'scale(0.8)',
-    border: 'none',
-    overflow: 'hidden',
-    pointerEvents: 'none',
-  }}
-></iframe>
+            <iframe
+              src={`${senderreceiverDoc}/${el.img}`}
+              width="100%"
+              height="300px"
+              title="Document Viewer"
+              style={{
+                zoom: "scale(0.8)",
+                border: "none",
+                overflow: "hidden",
+                pointerEvents: "none",
+              }}
+            ></iframe>
 
+            {/* Additional content below the PDF iframe */}
+            <div
+              style={{
+                position: "absolute",
 
-  {/* Additional content below the PDF iframe */}
-  <div
-            style={{
-              position: 'absolute',
-             
-              width: '27%',
-              alignContent:"center",
-              alignItems:"center",
-              marginLeft:"0px",
-              backgroundColor: 'black', 
-              color:"white",
-              height:"200px",
-              marginTop:"80px"
-              // Adjust background color as needed
-            }}
-          >
-            <Typography variant="caption">Additional Content Below PDF</Typography>
-          </div>
+                width: "27%",
+                alignContent: "center",
+                alignItems: "center",
+                marginLeft: "0px",
+                backgroundColor: "black",
+                color: "white",
+                height: "200px",
+                marginTop: "80px",
+                // Adjust background color as needed
+              }}
+            >
+              <Typography variant="caption">
+                Additional Content Below PDF
+              </Typography>
+            </div>
           </Stack>
           <Typography
             variant="body2"
@@ -157,8 +193,7 @@ const DocMsg = ({
                 right: "0",
               }}
             >
-              {
-                el.star === "1" ? (
+              {el.star === "1" ? (
                 <StarBorderIcon
                   style={{
                     fontSize: "16px",
@@ -197,6 +232,7 @@ const DocMsg = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
@@ -215,7 +251,7 @@ const LinkMsg = ({
   star,
   handleEdit,
   openContactlist,
-  senderid
+  senderid,
 }) => {
   const theme = useTheme();
 
@@ -232,6 +268,7 @@ const LinkMsg = ({
   };
 
   const textRef = useRef(null);
+  const [receiverimg, setReceiverimg] = useState("");
   const handleCopyClick = async () => {
     if (textRef.current) {
       const textToCopy = textRef.current.innerText;
@@ -248,18 +285,56 @@ const LinkMsg = ({
       }
     }
   };
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
 
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}{" "}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Stack spacing={2}>
@@ -338,6 +413,7 @@ const LinkMsg = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
@@ -356,10 +432,11 @@ const ReplyMsg = ({
   handleUnstar,
   handleEdit,
   openContactlist,
-  senderid
+  senderid,
 }) => {
   const theme = useTheme();
   const searchtext = searchTerm;
+  const [receiverimg, setReceiverimg] = useState("");
 
   const highlightText = (text, searchtext) => {
     if (!searchTerm) {
@@ -382,8 +459,7 @@ const ReplyMsg = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
+      
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
@@ -391,17 +467,56 @@ const ReplyMsg = ({
     }
   };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
+
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Stack spacing={2}>
@@ -478,6 +593,7 @@ const ReplyMsg = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
@@ -497,10 +613,10 @@ const MediaMsg = ({
   handleEdit,
   openContactlist,
   senderid,
-  setOffscroolbar
+  setOffscroolbar,
 }) => {
   const theme = useTheme();
-
+  const [receiverimg, setReceiverimg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
@@ -538,54 +654,82 @@ const MediaMsg = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
       }
     }
   };
-  
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
 
-
- 
-
-
+    getImage();
+  }, []);
 
   return (
-    
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Stack spacing={1}>
-
-        {
-          el.sender_id == senderid ? (
+          {el.sender_id == senderid ? (
             <img
-            src={`${senderreceiverImg}/${el.img}`}
-            alt={el.message}
-            onClick={openLightbox}
-            style={{ maxHeight: 210, borderRadius: "10px" }}
-          />
-           
+              src={`${senderreceiverImg}/${el.img}`}
+              alt={el.message}
+              onClick={openLightbox}
+              style={{ maxHeight: 210, borderRadius: "10px" }}
+            />
           ) : (
-            <Downloader imageUrl={`${senderreceiverImg}/${el.img}`} setOffscroolbar={setOffscroolbar}  msgId={el.id} el={el}/>
-          )
-        }
-        
-          
-           
+            <Downloader
+              imageUrl={`${senderreceiverImg}/${el.img}`}
+              setOffscroolbar={setOffscroolbar}
+              msgId={el.id}
+              el={el}
+            />
+          )}
+
           {isOpen && (
             <Lightbox
               mainSrc={`${senderreceiverImg}/${el.img}`}
@@ -662,6 +806,7 @@ const MediaMsg = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
@@ -680,10 +825,10 @@ const Audio = ({
   handleUnstar,
   handleEdit,
   openContactlist,
-  senderid
+  senderid,
 }) => {
   const theme = useTheme();
-
+  const [receiverimg, setReceiverimg] = useState("");
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) {
       return text; // Return the original text if no search term is provided
@@ -705,8 +850,6 @@ const Audio = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
@@ -714,14 +857,53 @@ const Audio = ({
     }
   };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
+
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
         }}
@@ -787,6 +969,7 @@ const Audio = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
@@ -806,10 +989,10 @@ const Video = ({
   handleEdit,
   openContactlist,
   senderid,
-  setOffscroolbar
+  setOffscroolbar,
 }) => {
   const theme = useTheme();
-
+  const [receiverimg, setReceiverimg] = useState("");
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) {
       return text; // Return the original text if no search term is provided
@@ -831,8 +1014,6 @@ const Video = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
@@ -840,34 +1021,74 @@ const Video = ({
     }
   };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
+
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Stack spacing={1}>
-          
-           {
-          el.sender_id == senderid ? (
+          {el.sender_id == senderid ? (
             <ReactPlayer
-            url={`${senderreceiverVideo}/${el.img}`}
-            width="300px" // Set your desired width
-            height="200px"
-            controls // Set your desired height
-          />
-           
+              url={`${senderreceiverVideo}/${el.img}`}
+              width="300px" // Set your desired width
+              height="200px"
+              controls // Set your desired height
+            />
           ) : (
-            <VideoDownloader imageUrl={`${senderreceiverVideo}/${el.img}`} setOffscroolbar={setOffscroolbar}  msgId={el.id} el={el}/>
-          )
-        }
+            <VideoDownloader
+              imageUrl={`${senderreceiverVideo}/${el.img}`}
+              setOffscroolbar={setOffscroolbar}
+              msgId={el.id}
+              el={el}
+            />
+          )}
           <Typography
             variant="body2"
             color={el.sender_id == senderid ? theme.palette.text : "#fff"}
@@ -926,6 +1147,7 @@ const Video = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
@@ -947,12 +1169,13 @@ const TextMsg = ({
   handleUnstar,
   handleEdit,
   openContactlist,
-  senderid
+  senderid,
+  profileImg,
 }) => {
-
-//  console.log(el);
+ 
   const theme = useTheme();
   const textRef = useRef(null);
+  const [receiverimg, setReceiverimg] = useState("");
 
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) {
@@ -966,6 +1189,25 @@ const TextMsg = ({
     );
   };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
+
   const handleCopyClick = async () => {
     if (textRef.current) {
       const textToCopy = textRef.current.innerText;
@@ -974,8 +1216,6 @@ const TextMsg = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
@@ -983,18 +1223,40 @@ const TextMsg = ({
     }
   };
 
+
+  
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
           position: "relative",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Typography
@@ -1002,7 +1264,11 @@ const TextMsg = ({
           color={el.sender_id == senderid ? theme.palette.text : "#fff"}
           position="relative"
         >
+        
           <div
+            style={{
+              width: el.message.length > 60 ? '467px' : ''
+            }}
             dangerouslySetInnerHTML={{
               __html: highlightText(el.message, searchTerm),
             }}
@@ -1042,157 +1308,10 @@ const TextMsg = ({
             />
           ) : null}
         </Typography>
+
+        
       </Box>
-      {menu && (
-        <MessageOptions
-          id={el}
-          handelmaindelete={handelmaindelete}
-          ReplyMsgs={ReplyMsgs}
-          getemoj={getemoj}
-          closeEmoj={closeEmoji}
-          handlestar={handlestar}
-          star={star}
-          handleUnstar={handleUnstar}
-          handleCopyClick={handleCopyClick}
-          handleEdit={handleEdit}
-          openContactlist={openContactlist}
-        />
-      )}
-    </Stack>
-  );
-};
-
-
-const TextWithEmojiMsg = ({
-  el,
-  menu,
-  handledelete,
-  setAnchorEls,
-  handelmaindelete,
-  ReplyMsgs,
-  getemoj,
-  closeEmoji,
-  searchTerm,
-  handlestar,
-  star,
-  handleUnstar,
-  handleEdit,
-  openContactlist,
-  senderid
-}) => {
-  const theme = useTheme();
-  const textRef = useRef(null);
-
-
-  const dataString = el.message; // Assuming el.message is the comma-separated string
-
-// Use regular expression to match emoji URLs and text
-const emojiRegex = /https:\/\/cdn\.jsdelivr\.net\/npm\/emoji-datasource-apple\/img\/apple\/64\/[a-f0-9]+\.png/g;
-const emojis = (dataString.match(emojiRegex) || []).filter(Boolean); // Filter out empty elements
-const text = dataString.replace(emojiRegex, '').replace(/,/g, '').trim(); // Remove commas from the text
-
-
-  const highlightText = (text, searchTerm) => {
-    if (!searchTerm) {
-      return text; // Return the original text if no search term is provided
-    }
-
-    const regex = new RegExp(`(${searchTerm})`, "gi");
-    return text.replace(
-      regex,
-      (match) => `<span style="background-color: yellow;">${match}</span>`
-    );
-  };
-
-  const handleCopyClick = async () => {
-    if (textRef.current) {
-      const textToCopy = textRef.current.innerText;
-
-      try {
-        // Use the Clipboard API to write text to the clipboard
-        await navigator.clipboard.writeText(textToCopy);
-
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
-      } catch (err) {
-        // Handle errors or exceptions
-        console.error("Unable to copy text. Please copy it manually.");
-      }
-    }
-  };
-
-  return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
-      <Box
-        p={1.5}
-        sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
-          borderRadius: 1.5,
-          width: "max-content",
-          position: "relative",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
-        }}
-      >
-        <Typography
-          variant="body2"
-          color={el.sender_id == senderid ? theme.palette.text : "#fff"}
-          position="relative"
-        >
-         <div style={{ display: 'flex', flexDirection: 'row' }}>
       
-         {emojis.map((emojiSrc, index) => (
-  <React.Fragment key={index}>
-    <img
-      src={emojiSrc}
-      alt={`Emoji ${index}`}
-      style={{ marginRight: '10px', width: '20px', height: '20px' }}
-    />
-    {index < emojis.length - 1 && ' '}
-  </React.Fragment>
-))}
-
-
-
-<p>{text}</p>
-
-    </div>
-          <div
-            className="time"
-            style={{
-              fontSize: "10px",
-              fontWeight: "bold",
-              float: "right",
-            }}
-          >
-            {el.star === "1" ? (
-              <StarBorderIcon
-                style={{
-                  fontSize: "16px",
-                }}
-              />
-            ) : null}
-            &nbsp;&nbsp;{el.time}
-          </div>
-
-          {/* Emoji image positioned absolutely */}
-          {el.reaction ? (
-            <img
-              src={el.reaction}
-              alt="Emoji"
-              style={{
-                position: "absolute",
-                top: "0",
-                right: "-20px",
-                width: "20px",
-                height: "20px",
-                marginTop: "40px",
-              }}
-            />
-          ) : null}
-        </Typography>
-      </Box>
       {menu && (
         <MessageOptions
           id={el}
@@ -1206,8 +1325,11 @@ const text = dataString.replace(emojiRegex, '').replace(/,/g, '').trim(); // Rem
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
+
+      
     </Stack>
   );
 };
@@ -1229,11 +1351,11 @@ const ForwardMsg = ({
   handleUnstar,
   handleEdit,
   openContactlist,
-  senderid
+  senderid,
 }) => {
   const theme = useTheme();
   const textRef = useRef(null);
-
+  const [receiverimg, setReceiverimg] = useState("");
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) {
       return text; // Return the original text if no search term is provided
@@ -1254,41 +1376,79 @@ const ForwardMsg = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
       }
     }
   };
- 
+
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
+
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "start" : "end"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "start" : "end"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
           position: "relative",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
-      
-      <div style={{
-        display:"flex",
-        color: el.sender_id == senderid == 0? 'white' : 'black'
-      }}>
-      <div>
-      <ForwardIcon />
-      </div> 
-      <div>
-        <p>forward</p>
-      </div>
-      </div>
+        <div
+          style={{
+            display: "flex",
+            color: (el.sender_id == senderid) == 0 ? "white" : "black",
+          }}
+        >
+          <div>
+            <ForwardIcon />
+          </div>
+          <div>
+            <p>forward</p>
+          </div>
+        </div>
         <Typography
           variant="body2"
           color={el.sender_id == senderid ? theme.palette.text : "#fff"}
@@ -1348,13 +1508,12 @@ const ForwardMsg = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
   );
 };
-
-
 
 const CallRequest = ({
   el,
@@ -1372,12 +1531,12 @@ const CallRequest = ({
   handleEdit,
   openContactlist,
   senderid,
-  setCallersData
+  setCallersData,
 }) => {
   const theme = useTheme();
   const textRef = useRef(null);
   const navigate = useNavigate();
-
+  const [receiverimg, setReceiverimg] = useState("");
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) {
       return text; // Return the original text if no search term is provided
@@ -1398,8 +1557,7 @@ const CallRequest = ({
         // Use the Clipboard API to write text to the clipboard
         await navigator.clipboard.writeText(textToCopy);
 
-        // Log success message or perform any additional action
-        console.log("Text copied successfully! navigator");
+    
       } catch (err) {
         // Handle errors or exceptions
         console.error("Unable to copy text. Please copy it manually.");
@@ -1407,26 +1565,63 @@ const CallRequest = ({
     }
   };
 
-
   const handleNavigateCall = () => {
-    
-    navigate('/socket/video', { state: { callingid: el.call_request,callingname:el.message } });
-  }
-  
+    navigate("/socket/video", {
+      state: { callingid: el.call_request, callingname: el.message },
+    });
+  };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
 
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
           position: "relative",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Typography
@@ -1434,10 +1629,12 @@ const CallRequest = ({
           color={el.sender_id == senderid ? theme.palette.text : "#fff"}
           position="relative"
         >
-         <div>
-         {  el.sender_id == senderid ? `calling To ${el.message}` : `calling From ${el.message}` }
-              <VideoCallIcon onClick={handleNavigateCall}/>
-         </div>
+          <div>
+            {el.sender_id == senderid
+              ? `calling To ${el.message}`
+              : `calling From ${el.message}`}
+            <VideoCallIcon onClick={handleNavigateCall} />
+          </div>
           <div
             className="time"
             style={{
@@ -1486,14 +1683,12 @@ const CallRequest = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
   );
 };
-
-
-
 
 const AudioCallRequest = ({
   el,
@@ -1511,11 +1706,12 @@ const AudioCallRequest = ({
   handleEdit,
   openContactlist,
   senderid,
-  setCallersData
+  setCallersData,
 }) => {
   const theme = useTheme();
   const textRef = useRef(null);
   const navigate = useNavigate();
+  const [receiverimg, setReceiverimg] = useState("");
 
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) {
@@ -1546,26 +1742,63 @@ const AudioCallRequest = ({
     }
   };
 
-
   const handleNavigateCall = () => {
-    
-    navigate('/socket/audio', { state: { callingid: el.call_request,callingname:el.message } });
-  }
-  
+    navigate("/socket/audio", {
+      state: { callingid: el.call_request, callingname: el.message },
+    });
+  };
 
+  useEffect(() => {
+    const getImage = async () => {
+      try {
+        const getImageResponse = await axios.post(
+          `${chatserverUrl}/getreceiverImg`,
+          {
+            receiver_id: el.Msgtype == "User" ? el.receiver_id : el.sender_id,
+          }
+        );
+        setReceiverimg(getImageResponse.data.data.message.profile_image);
+      } catch (error) {
+        console.error("Error fetching image:", error.message);
+        return null;
+      }
+    };
+
+    getImage();
+  }, []);
 
   return (
-    <Stack direction="row" justifyContent={el.sender_id == senderid ? "end" : "start"}>
+    <Stack
+      direction="row"
+      justifyContent={el.sender_id == senderid ? "end" : "start"}
+    >
+      {el.Msgtype === "Group" && el.sender_id != senderid && (
+        <img
+          src={
+            receiverimg.length === 0
+              ? "https://cdn2.iconfinder.com/data/icons/smiles-business/512/1041_boy_c-512.png"
+              : receiverimg
+          }
+          alt="Profile"
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            marginRight: "8px",
+          }}
+        />
+      )}
       <Box
         p={1.5}
         sx={{
-          backgroundColor: el.sender_id == senderid
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
+          backgroundColor:
+            el.sender_id == senderid
+              ? theme.palette.background.default
+              : theme.palette.primary.main,
           borderRadius: 1.5,
           width: "max-content",
           position: "relative",
-          boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px'
+          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
         }}
       >
         <Typography
@@ -1573,10 +1806,12 @@ const AudioCallRequest = ({
           color={el.sender_id == senderid ? theme.palette.text : "#fff"}
           position="relative"
         >
-         <div>
-         {  el.sender_id == senderid ? `calling To ${el.message}` : `calling From ${el.message}` }
-              <AddIcCallIcon onClick={handleNavigateCall}/>
-         </div>
+          <div>
+            {el.sender_id == senderid
+              ? `calling To ${el.message}`
+              : `calling From ${el.message}`}
+            <AddIcCallIcon onClick={handleNavigateCall} />
+          </div>
           <div
             className="time"
             style={{
@@ -1625,26 +1860,28 @@ const AudioCallRequest = ({
           handleCopyClick={handleCopyClick}
           handleEdit={handleEdit}
           openContactlist={openContactlist}
+          senderid={senderid}
         />
       )}
     </Stack>
   );
 };
 
-
 const TimeLine = ({ el }) => {
   const theme = useTheme();
   return (
     <Stack direction="row" alignItems="center" justifyContent="center">
-     <Box sx={{
-      backgroundColor:"#9bff1c",
-      borderRadius:"11px",
-      padding:"4px 8px",
-      textAlign:"center"
-     }}>
-     <p className="mb-0"> {el.date}</p>
-     </Box>
-  </Stack>
+      <Box
+        sx={{
+          backgroundColor: "#9bff1c",
+          borderRadius: "11px",
+          padding: "4px 8px",
+          textAlign: "center",
+        }}
+      >
+        <p className="mb-0"> {el.date}</p>
+      </Box>
+    </Stack>
   );
 };
 
@@ -1660,7 +1897,8 @@ const MessageOptions = ({
   handleCopyClick,
   handleUnstar,
   handleEdit,
-  openContactlist
+  openContactlist,
+  senderid
 }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
@@ -1668,40 +1906,40 @@ const MessageOptions = ({
   const [clickemoj, setClickEmoj] = React.useState(0);
   const open = Boolean(anchorEl);
 
-
   const allowedEditingTime = 5 * 60 * 1000;
 
-const currentTime = new Date();
-const createdAt = new Date(id.date_added);
-const timeDifference = currentTime - createdAt;
+  const currentTime = new Date();
+  const createdAt = new Date(id.date_added);
+  const timeDifference = currentTime - createdAt;
 
 
-const Text_options = [
-  {
-    title: "Reply",
-  },
-  {
-    title: "React to message",
-  },
-  {
-    title: timeDifference <= allowedEditingTime ? "Edit" : undefined,
-  },
-  {
-    title: "Forward message",
-  },
-  {
-    title: "Delete Message",
-  },
-  {
-    title: id.star === "1" ? "Unstar" : "Star",
-  },
-  {
-    title: "Copy",
-  }
-].filter((option) => option.title !== undefined); // Filter out undefined titles
+  
 
 
 
+  const Text_options = [
+    {
+      title: "Reply",
+    },
+    {
+      title: "React to message",
+    },
+    {
+      title: timeDifference <= allowedEditingTime  ? "Edit" : undefined,
+    },
+    {
+      title: "Forward message",
+    },
+    {
+      title: "Delete Message",
+    },
+    {
+      title: id.star === "1" ? "Unstar" : "Star",
+    },
+    {
+      title: "Copy",
+    },
+  ].filter((option) => option.title !== undefined); // Filter out undefined titles
 
   const handleClick = (event) => {
     event.preventDefault();
@@ -1770,22 +2008,19 @@ const Text_options = [
   };
 
   const handleCopyText = () => {
-   
     handleCopyClick();
     setAnchorEl(null);
   };
 
   const handleEdits = (data) => {
-   
     handleEdit(data);
     setAnchorEl(null);
   };
 
-
   const handleForward = (data) => {
-    openContactlist(data)
+    openContactlist(data);
     setAnchorEl(null);
-  }
+  };
 
   return (
     <>
@@ -1817,18 +2052,16 @@ const Text_options = [
                   } else if (el.title.trim() == "Reply") {
                     handelReplyMsg(e, id);
                   } else if (el.title.trim() == "React to message") {
-                    handleClickemoj();  
+                    handleClickemoj();
                   } else if (el.title.trim() == "Star") {
                     handlestars(e, id);
                   } else if (el.title.trim() == "Unstar") {
                     handleUnstars(e, id);
                   } else if (el.title.trim() == "Copy") {
                     handleCopyText(e, id);
-                  }
-                  else if (el.title.trim() == "Edit") {
+                  } else if (el.title.trim() == "Edit") {
                     handleEdits(id);
-                  }
-                  else if (el.title.trim() == "Forward message") {
+                  } else if (el.title.trim() == "Forward message") {
                     handleForward(id);
                   }
                 }}
@@ -1856,4 +2089,16 @@ const Text_options = [
 };
 
 // should not be default export, because we need to export multiple things
-export { TimeLine, TextMsg, MediaMsg, ReplyMsg, LinkMsg, DocMsg, Video, Audio, ForwardMsg,TextWithEmojiMsg,CallRequest,AudioCallRequest };
+export {
+  TimeLine,
+  TextMsg,
+  MediaMsg,
+  ReplyMsg,
+  LinkMsg,
+  DocMsg,
+  Video,
+  Audio,
+  ForwardMsg,
+  CallRequest,
+  AudioCallRequest,
+};

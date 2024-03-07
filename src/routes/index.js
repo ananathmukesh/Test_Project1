@@ -58,6 +58,7 @@ export default function Router() {
     { path: "/loader", element: <CssLoader /> },
     { path: "/dloader", element: <Downloader /> },
     { path: "/vloader", element: <VDownloadLoader /> },
+    { path: "/array", element: <ArrayLoader /> },
   ]);
 }
 
@@ -67,6 +68,10 @@ const GeneralApp = Loadable(
 
 const LoginPage = Loadable(
   lazy(() => import("../pages/auth/Login")),
+);
+
+const ArrayLoader = Loadable(
+  lazy(() => import("../utils/addarray.js")),
 );
 
 const StartChat = Loadable(

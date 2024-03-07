@@ -1,10 +1,10 @@
 import React from "react";
 // import Chats from "./Chats";
-import { Box, Stack, TextField, Fab, InputAdornment, Link } from "@mui/material";
+import { Box, Stack, TextField, Fab, InputAdornment } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import { useSelector } from "react-redux";
-import { IconButton, Button, Divider, Tooltip, Typography } from "@mui/material";
-import { ArchiveBox, CircleDashed, MagnifyingGlass, Plus } from "phosphor-react";
+import { IconButton, Button, Divider, Tooltip } from "@mui/material";
+import { ArchiveBox, CircleDashed, MagnifyingGlass } from "phosphor-react";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
@@ -40,17 +40,14 @@ import { toast } from "react-toastify";
 import Welcome from "../../utils/WelcomePage";
 import io from "socket.io-client";
 import { BsEmojiSmile } from "react-icons/bs";
-import InputGroup from 'react-bootstrap/InputGroup';
-import Form from 'react-bootstrap/Form';
-import { SocketContext } from '../../context'
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form";
+import { SocketContext } from "../../context";
 import { useContext } from "react";
 import Loader from "../../utils/loader";
-import CreateGroup from '../../sections/main/CreateGroup'
-import GroupChatElement from '../../components/Conversation/GroupElement'
 
 // const socket = io.connect("https://backend-wc4l.onrender.com/");
 const socket = io.connect("http://localhost:8002");
-
 
 const StyledInput = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -121,7 +118,7 @@ const ChatInput = ({
   setShowEmoji,
   showEmoji,
   openAction,
-  setOpenAction
+  setOpenAction,
 }) => {
   const videoRef = useRef(null);
   const [savedAudioBlob, setSavedAudioBlob] = useState(null);
@@ -135,7 +132,6 @@ const ChatInput = ({
   const [audio, setAudio] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [typedvalue, setTypedvalue] = useState("");
-  
 
   const onStart = () => {
     setIsRecording(true);
@@ -148,7 +144,6 @@ const ChatInput = ({
     setRecordedBlob(recordedBlob.blob);
     setFullRecordedBlob(recordedBlob);
     setTogetblob(recordedBlob);
-    
   };
 
   const handlePlayPause = () => {
@@ -204,13 +199,6 @@ const ChatInput = ({
     }
   };
 
-
- 
-
-
-  
-   
-
   return (
     <>
       {microphone === 1 ? (
@@ -262,119 +250,105 @@ const ChatInput = ({
                 <span>No Emoji</span>
             )} */}
 
-              
-            <Stack
-          
-             sx={{
-              width: "max-content",
-              marginLeft: "auto",
-               }}
-              
-            >
-              {hideSelector ? (
-                <Stack
-                  sx={{
-                    position: "relative",
-                    display: openAction ? "inline-block" : "none",
-                  }}
-                  
-                >
-                  {Actions.map((el) => (
-                    <Tooltip
-                      placement="right"
-                      title={el.title}
-                      key={el.title}
-                      onClick={() => {
-                        if (el.title == "Photo/Video") {
-                          handleButtonClick();
-                        }
-                        if (el.title == "Document") {
-                          handleButtonClick();
-                        }
-                        if (el.title == "Image") {
-                          handleOpenCamera();
-                        }
-                        if (el.title == "Image") {
-                          handleOpenCamera();
-                        }
-                        if (el.title == "ShareLocation") {
-                          handleShareLocation();
-                        }
-                      }}
-                    >
-                      <Fab
-                        sx={{
-                          position: "absolute",
-                          top: -el.y,
-                          backgroundColor: el.color,
-                        }}
-                      >
-                        {el.icon}
-                      </Fab>
-                    </Tooltip>
-                  ))}
-                  <input
-                    type="file"
-                    style={{ display: "none" }}
-                    ref={(input) => (fileInputRef.current = input)}
-                    onChange={(e) => {
-                      handleFileChange(e);
-                    }}
-                  />
-
-                  <input
-                    type="file"
-                    accept=".doc, .docx, .pdf, .txt" // Specify the document file types you want to accept
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handleDocsFileChange(e);
-                    }}
-                  />
-                </Stack>
-              ) : null}
-
-            
-            </Stack>
-            <InputGroup className="mb-3">
-          
-      <Form.Control
-        value={text}
-        onChange={(e) => {
-          handleInputChange(e);
-          
+      <Stack
+        sx={{
+          width: "max-content",
+          marginLeft: "auto",
         }}
-        key={inputKey}
-        fullWidth
-        ref={inputRef}
-        placeholder="Type Your Text"
-        aria-label="Username"
-        aria-describedby="basic-addon1"
-        variant="filled"
-        autoFocus
-      />
-
-      <InputGroup.Text
-        id="basic-addon1"
-        onClick={() =>setShowEmoji(!showEmoji)}
-        className="cursor-pointer hover:text-slate-300"
       >
-        <BsEmojiSmile />
-      </InputGroup.Text>
-      
-      <InputGroup.Text
-        id="basic-addon1"
-        onClick={() => setOpenAction((prev) => !prev)}
-        className="cursor-pointer hover:text-slate-300"
-      >
-        <LinkSimple />
-      </InputGroup.Text>
-    </InputGroup>
+        {hideSelector ? (
+          <Stack
+            sx={{
+              position: "relative",
+              display: openAction ? "inline-block" : "none",
+            }}
+          >
+            {Actions.map((el) => (
+              <Tooltip
+                placement="right"
+                title={el.title}
+                key={el.title}
+                onClick={() => {
+                  if (el.title == "Photo/Video") {
+                    handleButtonClick();
+                  }
+                  if (el.title == "Document") {
+                    handleButtonClick();
+                  }
+                  if (el.title == "Image") {
+                    handleOpenCamera();
+                  }
+                  if (el.title == "Image") {
+                    handleOpenCamera();
+                  }
+                  if (el.title == "ShareLocation") {
+                    handleShareLocation();
+                  }
+                }}
+              >
+                <Fab
+                  sx={{
+                    position: "absolute",
+                    top: -el.y,
+                    backgroundColor: el.color,
+                  }}
+                >
+                  {el.icon}
+                </Fab>
+              </Tooltip>
+            ))}
+            <input
+              type="file"
+              style={{ display: "none" }}
+              ref={(input) => (fileInputRef.current = input)}
+              onChange={(e) => {
+                handleFileChange(e);
+              }}
+            />
 
+            <input
+              type="file"
+              accept=".doc, .docx, .pdf, .txt" // Specify the document file types you want to accept
+              style={{ display: "none" }}
+              onChange={(e) => {
+                handleDocsFileChange(e);
+              }}
+            />
+          </Stack>
+        ) : null}
+      </Stack>
+      <InputGroup className="mb-3">
+        <Form.Control
+          value={text}
+          onChange={(e) => {
+            handleInputChange(e);
+          }}
+          key={inputKey}
+          fullWidth
+          ref={inputRef}
+          placeholder="Type Your Text"
+          aria-label="Username"
+          aria-describedby="basic-addon1"
+          variant="filled"
+          autoFocus
+        />
 
+        <InputGroup.Text
+          id="basic-addon1"
+          onClick={() => setShowEmoji(!showEmoji)}
+          className="cursor-pointer hover:text-slate-300"
+        >
+          <BsEmojiSmile />
+        </InputGroup.Text>
 
-           
-
-           
+        <InputGroup.Text
+          id="basic-addon1"
+          onClick={() => setOpenAction((prev) => !prev)}
+          className="cursor-pointer hover:text-slate-300"
+        >
+          <LinkSimple />
+        </InputGroup.Text>
+      </InputGroup>
 
       {/* <StyledInput
       
@@ -489,20 +463,15 @@ const ChatInput = ({
           ),
         }}
       /> */}
-
-      
     </>
   );
 };
 
-const Group = () => {
+const GeneralApp = () => {
+  const { answerCall, call, callAccepted, me } = useContext(SocketContext);
 
-  
+  console.log("genral page", me);
 
-  const { answerCall, call, callAccepted, me } = useContext(SocketContext)
-  
- console.log('genral page',me);
-  
   const theme = useTheme();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -523,6 +492,7 @@ const Group = () => {
 
   const [inputValue, setInputValue] = useState("");
   const [chatmasterid, setChatmasterid] = useState("");
+
   const [joinchatmaster, setJoinchatmaster] = useState("");
   const [profileImg, setProfileImg] = useState("");
   const [dpname, setDpname] = useState("");
@@ -531,7 +501,7 @@ const Group = () => {
   const [SelectedImg, setSelectedImg] = useState(null);
   const [microphone, setClickmicrophone] = useState(0);
   const [Audio, setAudio] = useState("");
- 
+
   const [star, setStar] = useState(false);
   const [Togetblob, setTogetblob] = useState("");
   const [openModal, setOpenModal] = useState(0);
@@ -541,7 +511,7 @@ const Group = () => {
   const [editModel, setEditModel] = useState(0);
   const [EditData, setEditData] = useState("");
   const [ClearInputField, setClearInputField] = useState(1);
-  
+
   const [OpenContact, setOpenContactlist] = useState(0);
   const [DefaultValue, setDefaultValue] = useState(0);
   const [inputKey, setInputKey] = useState(0);
@@ -549,25 +519,26 @@ const Group = () => {
   const [Downarrow, setDownarrow] = useState(0);
   const [OpenReplyModel, setOpenReplyModel] = useState(0);
   const [Replydata, setReplydata] = useState(0);
-  const [Scroolvalue, setScroolvalue] = useState('');
+  const [Scroolvalue, setScroolvalue] = useState("");
   const [checkboxStates, setCheckboxStates] = useState({});
-  const [ForwardData, setForwardData] = useState('');
-  const [msgForwardData, setMsgForwardData] = useState('');
+  const [ForwardData, setForwardData] = useState("");
+  const [msgForwardData, setMsgForwardData] = useState("");
   const [SendForwardMsg, setSendForwardMsg] = useState(0);
-  const [Forwardchatid, setForwardChatmasterid] = useState('');
-  const [LoaderOn, setLoaderOn] = useState('');
-  const [Dbsubtype, setDbsubtype] = useState('');
+  const [Forwardchatid, setForwardChatmasterid] = useState("");
+  const [LoaderOn, setLoaderOn] = useState("");
+  const [Dbsubtype, setDbsubtype] = useState("");
   const [text, setText] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [openAction, setOpenAction] = useState(false);
   const [PhoneCallrequest, setPhoneCallrequest] = useState(0);
   const [sessionUsers, setUsers] = useState(0);
-  const [openAudioCall,setOpenAudioCall] = useState(0);
+  const [openAudioCall, setOpenAudioCall] = useState(0);
   const [loading, setLoading] = useState(true);
   const [ClickUser, setClickUser] = useState(0);
-  const [offscroolbar,setOffscroolbar] = useState(0)
+  const [offscroolbar, setOffscroolbar] = useState(0);
+  const [Newoffset, setNewoffset] = useState(data.length);
 
-  const [openDialog, setOpenDialog] = useState(false);
+  const [fetchingMoreMessages, setFetchingMoreMessages] = useState(false);
 
 
   const inputRef = useRef(null);
@@ -577,76 +548,62 @@ const Group = () => {
       !el.pinned && el.name.toLowerCase().includes(searchTermlist.toLowerCase())
   );
 
+  const handleCheckboxChange = async (contactId, data) => {
+    const chatmasterId = await fetchContactlistChatid(userid, contactId);
+    if (chatmasterId == null) {
+      setForwardChatmasterid("NoChatId");
+    } else {
+      setForwardChatmasterid(chatmasterId.chatmaster_id);
+    }
+    setCheckboxStates((prevStates) => {
+      const isChecked = !prevStates[contactId];
+      setForwardData(isChecked ? data : null);
+      setSendForwardMsg(isChecked ? 1 : 0);
+      return {
+        ...prevStates,
+        [contactId]: isChecked,
+      };
+    });
+  };
 
-    const handleCheckboxChange = async(contactId, data) => {
-      const chatmasterId = await fetchContactlistChatid(userid, contactId);
-       if(chatmasterId == null){
-        setForwardChatmasterid('NoChatId');
-       }else{
-        setForwardChatmasterid(chatmasterId.chatmaster_id);
-       }
-      setCheckboxStates((prevStates) => {
-        const isChecked = !prevStates[contactId];
-        setForwardData(isChecked ? data : null);
-        setSendForwardMsg(isChecked ? 1 : 0);
-        return {
-          ...prevStates,
-          [contactId]: isChecked,
-        };
-      });
-  
-      
+  console.log(data);
 
+  const handleInputChange = (e) => {
+    const newText = e.target.value;
+    setText(newText);
+    setInputValue(newText);
+  };
 
-      
-    };
-  
+  const addEmoji = (e) => {
+    const sym = e.unified.split("_");
+    const codeArray = sym.map((el) => parseInt(el, 16));
+    const emoji = String.fromCodePoint(...codeArray);
+    setText((prevText) => prevText + emoji);
+    setInputValue((prevText) => prevText + emoji);
+  };
 
-    console.log('chatmaster id',chatmasterid);
+  const fetchContactlistChatid = async (userid, clickedChatId) => {
+    try {
+      const user_ids = {
+        user_id: userid,
+        receiver_id: clickedChatId,
+      };
+      const res = await axios.post(
+        `${chatserverUrl}/getchatmasterid`,
+        user_ids
+      );
 
-
-
-    const handleInputChange = (e) => {
-      const newText = e.target.value;
-      setText(newText);
-      setInputValue(newText);
-    };
-  
-    const addEmoji = (e) => {
-      const sym = e.unified.split("_");
-      const codeArray = sym.map((el) => parseInt(el, 16));
-      const emoji = String.fromCodePoint(...codeArray);
-      setText((prevText) => prevText + emoji);
-      setInputValue((prevText) => prevText + emoji);
-    };
-
-
-    const fetchContactlistChatid = async (userid, clickedChatId) => {
-      try {
-        const user_ids = {
-          user_id: userid,
-          receiver_id: clickedChatId,
-        };
-        const res = await axios.post(
-          `${chatserverUrl}/getchatmasterid`,
-          user_ids
-        );
-      
-       
-    
-        if (res) {
-          return res.data.data.chatmaster_id[0];
-        } else {
-          // Handle other cases if needed
-          return null;
-        }
-      } catch (err) {
-        // Handle errors
+      if (res) {
+        return res.data.data.chatmaster_id[0];
+      } else {
+        // Handle other cases if needed
         return null;
       }
-    };
-    
-
+    } catch (err) {
+      // Handle errors
+      return null;
+    }
+  };
 
   const scrollbarsRef = useRef(null);
 
@@ -686,11 +643,11 @@ const Group = () => {
   const handleEmojiSelect = (emoji) => {};
 
 
-   
+
+
 
   useEffect(() => {
-    const handleKeyPress = async(event) => {
-      
+    const handleKeyPress = async (event) => {
       // Check if the pressed key is Enter (key code 13)
       if (event.key === "Enter" && inputValue.length > 0) {
         try {
@@ -698,12 +655,12 @@ const Group = () => {
           const hours = currentTime.getHours();
           const minutes = currentTime.getMinutes();
           const ampm = hours >= 12 ? "pm" : "am";
-    
+
           // Convert 24-hour format to 12-hour format
           const formattedHours = hours % 12 || 12;
-    
+
           const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
-    
+
           const formData = new FormData();
           formData.append("senderid", userid);
           formData.append("receiverid", clickedChatId);
@@ -712,13 +669,20 @@ const Group = () => {
           formData.append("time", formattedTime);
           formData.append("incoming", false); // Use boolean value instead of string
           formData.append("outgoing", true); // Use boolean value instead of string
-          formData.append("subtype", Togetblob.blobURL ? "Audio" : Dbsubtype=='textwithemoji' ? 'textwithemoji' : '');
+          formData.append(
+            "subtype",
+            Togetblob.blobURL
+              ? "Audio"
+              : Dbsubtype == "textwithemoji"
+              ? "textwithemoji"
+              : ""
+          );
           formData.append("chatmaster_id", chatmasterid);
           formData.append("image", SelectedImg);
           formData.append("audio", Togetblob.blobURL);
           formData.append("reply", "");
-          formData.append("Msgtype", "Group");
-    
+          formData.append("Msgtype", "User");
+
           const axiosInstance = axios.create({
             headers: {
               "Content-Type": "multipart/form-data",
@@ -727,8 +691,7 @@ const Group = () => {
           socket.emit("send_message", {
             message: inputValue,
           });
-         
-          
+
           const res = await axiosInstance.post(
             `${chatserverUrl}/msgconversation`,
             formData
@@ -744,11 +707,11 @@ const Group = () => {
               setSelectedImg("");
               setInputValue("");
               setDefaultValue(1);
-              OnclickfetchSenderReceiverMsg(chatmasterid, userid);
+              OnclickfetchSenderReceiverMsg(chatmasterid, userid, 0, 10);
               setClearInputField(0);
-              setTogetblob('');
-              setDbsubtype('');
-              setText('');
+              setTogetblob("");
+              setDbsubtype("");
+              setText("");
               setShowEmoji(false);
             } else {
               console.log(res);
@@ -765,7 +728,15 @@ const Group = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [inputValue,Togetblob.blobURL,chatmasterid,SelectedImg,userid,clickedChatId,Dbsubtype]);
+  }, [
+    inputValue,
+    Togetblob.blobURL,
+    chatmasterid,
+    SelectedImg,
+    userid,
+    clickedChatId,
+    Dbsubtype,
+  ]);
 
   const handleKeyDown = (e) => {
     // // Check if the down arrow key is pressed (keyCode 40)
@@ -774,33 +745,45 @@ const Group = () => {
     //   scrollbarsRef.current.scrollTop += 10; // You can adjust the scroll distance as needed
     // }
   };
+
+
+
+  const scrollToPosition = (position) => {
+    const container = scrollbarsRef.current.container;
+  
+    if (container) {
+      container.scrollTo({
+        top: position,
+        behavior: 'smooth', // You can use 'auto' for instant scrolling
+      });
+    }
+  };
   
 
-
-
   useEffect(() => {
-    if(scrollbarsRef.current && ControlScrool == true && offscroolbar == 0){
+    if (scrollbarsRef.current && ControlScrool == true && offscroolbar == 0) {
+     scrollbarsRef.current.scrollToBottom();
+    }
+
+    if (
+      scrollbarsRef.current &&
+      Scroolvalue.trim() == "scrooldown" &&
+      offscroolbar == 0
+    ) {
       scrollbarsRef.current.scrollToBottom();
     }
 
-      if(scrollbarsRef.current && Scroolvalue.trim() == 'scrooldown' && offscroolbar == 0){
-        scrollbarsRef.current.scrollToBottom();
-      }
+    if (scrollbarsRef.current && chathistory.length < 10) {
+      scrollbarsRef.current.scrollToTop();
+    }
 
-      if(scrollbarsRef.current && chathistory.length < 10){
-        scrollbarsRef.current.scrollToTop();
-      }
-    
-      if(offscroolbar == 1){
-
-      }
+    if (offscroolbar == 1) {
+    }
     if (socket.connected) {
       const receiveMessageHandler = (data) => {
         try {
           if (data === "success") {
             OnclickfetchSenderReceiverMsg(chatmasterid, userid);
-          
-          
           }
         } catch (error) {
           console.error("Error in receiveMessageHandler:", error);
@@ -813,40 +796,45 @@ const Group = () => {
         socket.off("receive_message", receiveMessageHandler);
       };
     }
-  }, [chatmasterid, userid, socket, inputRef, scrollbarsRef, chathistory, ControlScrool,offscroolbar]); // Run when chatmasterid or userid changes
+  }, [
+    chatmasterid,
+    userid,
+    socket,
+    inputRef,
+    scrollbarsRef,
+    chathistory,
+    ControlScrool,
+    offscroolbar,
+  ]); // Run when chatmasterid or userid changes
 
+  useEffect(() => {
+    if (loading === false && scrollbarsRef.current && offscroolbar == 0) {
+      scrollbarsRef.current.scrollToBottom();
+    }
+  }, [loading, scrollbarsRef, offscroolbar]);
 
-useEffect(() => {
-  if(loading === false && scrollbarsRef.current && offscroolbar == 0){
-    scrollbarsRef.current.scrollToBottom();
-  }
-}, [loading,scrollbarsRef,offscroolbar])
-
-  
   console.log(offscroolbar);
 
   useEffect(() => {
-    // socket.on('receive_message', (data) => {
-    //   if(data){
-    //     OnclickfetchSenderReceiverMsg(chatmasterid,userid);
-    //   }
-    //  }
-    //  )
-
-    const currentUrl = window.location.href;
-    const urlParts = currentUrl.split('/');
-    const groupValue = urlParts[urlParts.length - 1];
-
-    console.log('Group Value:', groupValue);
-
+  
 
     const authData = JSON.parse(localStorage.getItem("auth"));
 
     if (authData) {
       // Use the retrieved data as needed
       setUsername(authData.user.id);
-      setUsers(authData.user)
+      setUsers(authData.user);
     }
+
+    const currentUrl = window.location.href;
+
+    // Split the URL based on '/'
+    const urlParts = currentUrl.split("/");
+
+    // Get the last part of the URL, which should be "group"
+    const groupValue = urlParts[urlParts.length - 1];
+
+    console.log("Group Value:", groupValue);
 
     const fetchData = async () => {
       try {
@@ -856,11 +844,9 @@ useEffect(() => {
           id: authData.user.id,
           receiver_id: clickedChatId,
         };
-        const callapi = groupValue === 'app' ? 'chatlist' : 'grouplist';
-        const response = await axios.post(`${serverUrl}/grouplist`, listdetails);
-        console.log(response);
+
+        const response = await axios.post(`${serverUrl}/chatlist`, listdetails);
         setData(response.data.data.chatlist);
-        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -868,29 +854,27 @@ useEffect(() => {
 
     fetchData();
 
-    // const fetchchatmasterId = async () => {
-    //   try {
-    //     const user_ids = {
-    //       user_id: userid,
-    //       receiver_id: clickedChatId,
-    //     };
-    //     const res = await axios.post(
-    //       `${chatserverUrl}/getchatmasterid`,
-    //       user_ids
-    //     );
+    const fetchchatmasterId = async () => {
+      try {
+        const user_ids = {
+          user_id: userid,
+          receiver_id: clickedChatId,
+        };
+        const res = await axios.post(
+          `${chatserverUrl}/getchatmasterid`,
+          user_ids
+        );
 
-    //     setChatmasterid(res.data.data.chatmaster_id[0].chatmaster_id);
-    //     if (res.data) {
-    //       if (res.data.code == 200) {
-    //       } else {
-    //       }
-    //     }
-    //   } catch (err) {}
-    // };
+        setChatmasterid(res.data.data.chatmaster_id[0].chatmaster_id);
+        if (res.data) {
+          if (res.data.code == 200) {
+          } else {
+          }
+        }
+      } catch (err) {}
+    };
 
-    // fetchchatmasterId();
-
-   
+    fetchchatmasterId();
   }, [chathistory, openModal, socket, chatmasterid, userid, ControlScrool]);
 
   const fetchSenderReceiverMsg = async (chat_masterid, s_id) => {
@@ -904,7 +888,7 @@ useEffect(() => {
         `${serverUrl}/messages`,
         chathistoryids
       );
-    
+
       setChathistory(response.data.data.history);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -912,85 +896,101 @@ useEffect(() => {
   };
 
 
-
-   
+console.log('chat historey offset lenght',Newoffset);
 
   const onEmojiClick = (event, emojiObject, data) => {
     inputRef.current.focus();
     const newSelectedEmojis = [...selectedEmojis, emojiObject.target.src];
     setSelectedEmojis(newSelectedEmojis);
     setChosenEmoji(emojiObject.target.src);
-  
+
     setInputValue((prevText) => {
       // Combine selected emojis and existing inputValue
-      const mergedText = newSelectedEmojis.join(',') + prevText;
+      const mergedText = newSelectedEmojis.join(",") + prevText;
       return mergedText;
     });
-  
+
     // Set other state values
-    setDbsubtype('textwithemoji');
+    setDbsubtype("textwithemoji");
   };
-  
 
-  const textWithEmoji = (text) => {
-   
-  
-  }
+  const textWithEmoji = (text) => {};
 
-
-   console.log(data);
   const closeEditdata = () => {
     setEditModel(0);
   };
 
-  // const onchangeFetchMasterid = async (userids, clickedChatIds) => {
+  const onchangeFetchMasterid = async (userids, clickedChatIds) => {
+    try {
+      const user_ids = {
+        user_id: userids,
+        receiver_id: clickedChatIds,
+      };
+      const res = await axios.post(
+        `${chatserverUrl}/getchatmasterid`,
+        user_ids
+      );
+      if (res.data) {
+        if (res.data.code == 200) {
+          setChatmasterid(
+            res.data.data.chatmaster_id[0].chatmaster_id.length === 0
+              ? ""
+              : res.data.data.chatmaster_id[0].chatmaster_id
+          );
+        } else {
+        }
+      }
+    } catch (err) {
+      setChatmasterid("");
+    }
+  };
+
+  // const OnclickfetchSenderReceiverMsg = async (chat_masterid, s_id) => {
   //   try {
-  //     const user_ids = {
-  //       user_id: userids,
-  //       receiver_id: clickedChatIds,
+  //     const chathistoryids = {
+  //       chatmasterid: chat_masterid,
+  //       sender_id: s_id,
   //     };
-  //     const res = await axios.post(
-  //       `${chatserverUrl}/getchatmasterid`,
-  //       user_ids
+
+  //     const response = await axios.post(
+  //       `${serverUrl}/messages`,
+  //       chathistoryids
   //     );
-  //     if (res.data) {
-  //       if (res.data.code == 200) {
-  //         setChatmasterid(
-  //           res.data.data.chatmaster_id[0].chatmaster_id.length === 0
-  //             ? ""
-  //             : res.data.data.chatmaster_id[0].chatmaster_id
-  //         );
-  //       } else {
-  //       }
+
+  //     if (socket.connected) {
+  //       setChathistory(response.data.data.history);
   //     }
-  //   } catch (err) {
-  //     setChatmasterid("");
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
   //   }
   // };
 
-
-
-
-  const OnclickfetchSenderReceiverMsg = async (chat_masterid, s_id) => {
+  const OnclickfetchSenderReceiverMsg = async (chat_masterid, sender_id, offset, limit) => {
     try {
       const chathistoryids = {
         chatmasterid: chat_masterid,
-        sender_id: s_id,
+        sender_id: sender_id,
+        offset: offset,
+        limit: limit,
       };
-
-      const response = await axios.post(
-        `${serverUrl}/messages`,
-        chathistoryids
-      );
-      
+  
+      const response = await axios.post(`${serverUrl}/messages`, chathistoryids);
+  
       if (socket.connected) {
-        setChathistory(response.data.data.history);
-      
+        // Update the offset based on the new data
+        setNewoffset(offset + response.data.data.history.length);
+  
+        // Reverse and append the new messages to existing chat history
+        const reversedHistory = response.data.data.history.reverse();
+    
+        setChathistory((prevChathistory) => [...reversedHistory, ...prevChathistory]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+ 
 
   const handleDelete = async (id) => {
     try {
@@ -1050,20 +1050,20 @@ useEffect(() => {
     } catch (err) {}
   };
 
-  const handleChatClick = (chatmasterid, s_id, r_id, profileimg, name, e, loader) => {
-
-
-    const currentUrl = window.location.href;
-    const urlParts = currentUrl.split('/');
-    const groupValue = urlParts[urlParts.length - 1];
-
-    
-      
+  const handleChatClick = (
+    chatmasterid,
+    s_id,
+    r_id,
+    profileimg,
+    name,
+    e,
+    loader
+  ) => {
     setOffscroolbar(0);
     setLoading(true);
-    setScroolvalue('scrooldown');
+    setScroolvalue("scrooldown");
     setControlScrool(false);
-  
+    onchangeFetchMasterid(s_id, r_id);
     OnclickfetchJoinMasterid(s_id, r_id);
     setLoaderOn(loader);
     // Set the clicked chat id in the state
@@ -1071,16 +1071,16 @@ useEffect(() => {
     setChatspace(true);
     setProfileImg(profileimg);
     setDpname(name);
-    setChatmasterid(groupValue=='group'? chatmasterid : '');
+    setChatmasterid(chatmasterid);
     // Call otherFunction or any other logic you need
     otherFunction(chatmasterid);
-    OnclickfetchSenderReceiverMsg(chatmasterid, s_id);
+    OnclickfetchSenderReceiverMsg(chatmasterid, s_id, 0, 10);
     setTimeout(() => {
       setLoading(false);
       if (scrollbarsRef.current) {
         scrollbarsRef.current.scrollToBottom();
       }
-    }, 2000)
+    }, 2000);
   };
 
   const otherFunction = (id) => {
@@ -1131,11 +1131,7 @@ useEffect(() => {
     }
   };
 
-
-
   const handleClear = () => {};
-
- 
 
   const handleSendmessage = async (event) => {
     setOpenPicker(0);
@@ -1159,13 +1155,19 @@ useEffect(() => {
       formData.append("time", formattedTime);
       formData.append("incoming", false); // Use boolean value instead of string
       formData.append("outgoing", true); // Use boolean value instead of string
-      formData.append("subtype", Togetblob.blobURL ? "Audio" : Dbsubtype=='textwithemoji' ? 'textwithemoji' : '');
+      formData.append(
+        "subtype",
+        Togetblob.blobURL
+          ? "Audio"
+          : Dbsubtype == "textwithemoji"
+          ? "textwithemoji"
+          : ""
+      );
       formData.append("chatmaster_id", chatmasterid);
       formData.append("image", SelectedImg);
       formData.append("audio", Togetblob.blobURL);
       formData.append("reply", "");
-      formData.append("Msgtype", "Group");
-
+      formData.append("Msgtype", "User");
 
       const axiosInstance = axios.create({
         headers: {
@@ -1175,8 +1177,7 @@ useEffect(() => {
       socket.emit("send_message", {
         message: inputValue,
       });
-     
-      
+
       const res = await axiosInstance.post(
         `${chatserverUrl}/msgconversation`,
         formData
@@ -1186,18 +1187,17 @@ useEffect(() => {
       setSelectedEmojis("");
       if (res.data) {
         if (res.data.code == 200) {
-
           setControlScrool(true);
           setOffscroolbar(0);
           handleClear();
           setSelectedImg("");
           setInputValue("");
           setDefaultValue(1);
-          OnclickfetchSenderReceiverMsg(chatmasterid, userid);
+          OnclickfetchSenderReceiverMsg(chatmasterid, userid, 0, 10);
           setClearInputField(0);
-          setTogetblob('');
-          setDbsubtype('');
-          setText('');
+          setTogetblob("");
+          setDbsubtype("");
+          setText("");
           setShowEmoji(false);
         } else {
           console.log(res);
@@ -1266,7 +1266,6 @@ useEffect(() => {
 
   const getemoj = async (emoji, messagedata) => {
     try {
-      
       const id = messagedata.id;
       const sender_id = messagedata.sender_id;
       const receiver_id = messagedata.receiver_id;
@@ -1283,16 +1282,16 @@ useEffect(() => {
       };
 
       const res = await axios.post(`${chatserverUrl}/reaction`, formData);
-      
+
       if (res.data) {
         if (res.data.code == 200) {
           handleClear();
           setControlScrool(false);
-          setScroolvalue('scroolup');
+          setScroolvalue("scroolup");
           setSelectedImg("");
           setInputValue("");
           setText("");
-         
+
           fetchSenderReceiverMsg(chatmasterid, userid);
           setInputKey((prevKey) => prevKey + 1);
         } else {
@@ -1304,24 +1303,21 @@ useEffect(() => {
     }
   };
 
-   const closeReplydata = () => {
+  const closeReplydata = () => {
     setOpenReplyModel(0);
-   }
-
+  };
 
   const ReplyMsgs = async (e, data) => {
     e.preventDefault();
     setOpenReplyModel(1);
     setReplydata(data);
     // console.log("handel reply message");
-    setDbsubtype('reply');
-    
+    setDbsubtype("reply");
   };
 
-
-const handlesendReply = async(e) => {
-  // console.log('replyt send successfully');
-  e.preventDefault();
+  const handlesendReply = async (e) => {
+    // console.log('replyt send successfully');
+    e.preventDefault();
     try {
       const axiosInstance = axios.create({
         headers: {
@@ -1350,9 +1346,9 @@ const handlesendReply = async(e) => {
       formData.append("subtype", Dbsubtype);
       formData.append("chatmaster_id", chatmasterid);
       formData.append("image", SelectedImg);
-      formData.append("audio", '');
+      formData.append("audio", "");
       formData.append("reply", inputValue);
-      formData.append("Msgtype", "Group");
+      formData.append("Msgtype", "User");
 
       const res = await axiosInstance.post(
         `${chatserverUrl}/msgconversation`,
@@ -1364,11 +1360,11 @@ const handlesendReply = async(e) => {
           setOpenReplyModel(0);
           handleClear();
           setSelectedImg("");
-          OnclickfetchSenderReceiverMsg(chatmasterid,userid);
+          OnclickfetchSenderReceiverMsg(chatmasterid, userid, 0, 10);
           setInputValue("");
           setText("");
-          
-          setDbsubtype('');
+
+          setDbsubtype("");
           setInputKey((prevKey) => prevKey + 1);
         } else {
           console.log(res);
@@ -1377,291 +1373,218 @@ const handlesendReply = async(e) => {
     } catch (error) {
       console.log(error);
     }
-}
+  };
 
-const handlecallRequest = async(e) => {
-  e.preventDefault();
-  try {
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    const ampm = hours >= 12 ? "pm" : "am";
+  const handlecallRequest = async (e) => {
+    e.preventDefault();
+    try {
+      const currentTime = new Date();
+      const hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "pm" : "am";
 
-    // Convert 24-hour format to 12-hour format
-    const formattedHours = hours % 12 || 12;
+      // Convert 24-hour format to 12-hour format
+      const formattedHours = hours % 12 || 12;
 
-    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+      const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
 
-    const formData = new FormData();
-    formData.append("senderid", userid);
-    formData.append("receiverid", clickedChatId);
-    formData.append("type", "msg");
-    formData.append("message", `${sessionUsers.firstname} ${sessionUsers.lastname}`);
-    formData.append("time", formattedTime);
-    formData.append("incoming", false); // Use boolean value instead of string
-    formData.append("outgoing", true); // Use boolean value instead of string
-    formData.append("subtype", 'callRequest');
-    formData.append("chatmaster_id", chatmasterid);
-    formData.append("image", '');
-    formData.append("audio", '');
-    formData.append("reply", "");
-    formData.append("call_request", me);
-    formData.append("Msgtype", "Group");
+      const formData = new FormData();
+      formData.append("senderid", userid);
+      formData.append("receiverid", clickedChatId);
+      formData.append("type", "msg");
+      formData.append(
+        "message",
+        `${sessionUsers.firstname} ${sessionUsers.lastname}`
+      );
+      formData.append("time", formattedTime);
+      formData.append("incoming", false); // Use boolean value instead of string
+      formData.append("outgoing", true); // Use boolean value instead of string
+      formData.append("subtype", "callRequest");
+      formData.append("chatmaster_id", chatmasterid);
+      formData.append("image", "");
+      formData.append("audio", "");
+      formData.append("reply", "");
+      formData.append("call_request", me);
+      formData.append("Msgtype", "User");
 
-    const axiosInstance = axios.create({
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    socket.emit("send_message", {
-      message: inputValue,
-    });
-   
-    
-    const res = await axiosInstance.post(
-      `${chatserverUrl}/msgconversation`,
-      formData
-    );
-    setInputValue("");
-    setInputKey((prevKey) => prevKey + 1);
-    setSelectedEmojis("");
-    if (res.data) {
-      if (res.data.code == 200) {
+      const axiosInstance = axios.create({
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      socket.emit("send_message", {
+        message: inputValue,
+      });
 
-        setControlScrool(true);
-        
-        handleClear();
-        setSelectedImg("");
-        setInputValue("");
-        setDefaultValue(1);
-        OnclickfetchSenderReceiverMsg(chatmasterid, userid);
-        setClearInputField(0);
-        setTogetblob('');
-        setDbsubtype('');
-        setText('');
-        setShowEmoji(false);
-      } else {
-        console.log(res);
+      const res = await axiosInstance.post(
+        `${chatserverUrl}/msgconversation`,
+        formData
+      );
+      setInputValue("");
+      setInputKey((prevKey) => prevKey + 1);
+      setSelectedEmojis("");
+      if (res.data) {
+        if (res.data.code == 200) {
+          setControlScrool(true);
+
+          handleClear();
+          setSelectedImg("");
+          setInputValue("");
+          setDefaultValue(1);
+          OnclickfetchSenderReceiverMsg(chatmasterid, userid, 0, 10);
+          setClearInputField(0);
+          setTogetblob("");
+          setDbsubtype("");
+          setText("");
+          setShowEmoji(false);
+        } else {
+          console.log(res);
+        }
       }
+    } catch (err) {
+      console.log("err", err);
     }
-  } catch (err) {
-    console.log("err", err);
-  }
- }
+  };
 
+  const handleAudiocallRequest = async (e) => {
+    e.preventDefault();
+    console.log("audio call request");
+    try {
+      const currentTime = new Date();
+      const hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "pm" : "am";
 
- const handleAudiocallRequest = async(e) => {
-  e.preventDefault();
-    console.log('audio call request');
-      try {
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    const ampm = hours >= 12 ? "pm" : "am";
+      // Convert 24-hour format to 12-hour format
+      const formattedHours = hours % 12 || 12;
 
-    // Convert 24-hour format to 12-hour format
-    const formattedHours = hours % 12 || 12;
+      const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
 
-    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+      const formData = new FormData();
+      formData.append("senderid", userid);
+      formData.append("receiverid", clickedChatId);
+      formData.append("type", "msg");
+      formData.append(
+        "message",
+        `${sessionUsers.firstname} ${sessionUsers.lastname}`
+      );
+      formData.append("time", formattedTime);
+      formData.append("incoming", false); // Use boolean value instead of string
+      formData.append("outgoing", true); // Use boolean value instead of string
+      formData.append("subtype", "AudiocallRequest");
+      formData.append("chatmaster_id", chatmasterid);
+      formData.append("image", "");
+      formData.append("audio", "");
+      formData.append("reply", "");
+      formData.append("call_request", me);
+      formData.append("Msgtype", "User");
 
-    const formData = new FormData();
-    formData.append("senderid", userid);
-    formData.append("receiverid", clickedChatId);
-    formData.append("type", "msg");
-    formData.append("message", `${sessionUsers.firstname} ${sessionUsers.lastname}`);
-    formData.append("time", formattedTime);
-    formData.append("incoming", false); // Use boolean value instead of string
-    formData.append("outgoing", true); // Use boolean value instead of string
-    formData.append("subtype", 'AudiocallRequest');
-    formData.append("chatmaster_id", chatmasterid);
-    formData.append("image", '');
-    formData.append("audio", '');
-    formData.append("reply", "");
-    formData.append("call_request", me);
-    formData.append("Msgtype", "Group");
+      const axiosInstance = axios.create({
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      socket.emit("send_message", {
+        message: inputValue,
+      });
 
-    const axiosInstance = axios.create({
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    socket.emit("send_message", {
-      message: inputValue,
-    });
-   
-    
-    const res = await axiosInstance.post(
-      `${chatserverUrl}/msgconversation`,
-      formData
-    );
-    setInputValue("");
-    setInputKey((prevKey) => prevKey + 1);
-    setSelectedEmojis("");
-    if (res.data) {
-      if (res.data.code == 200) {
+      const res = await axiosInstance.post(
+        `${chatserverUrl}/msgconversation`,
+        formData
+      );
+      setInputValue("");
+      setInputKey((prevKey) => prevKey + 1);
+      setSelectedEmojis("");
+      if (res.data) {
+        if (res.data.code == 200) {
+          setControlScrool(true);
 
-        setControlScrool(true);
-        
-        handleClear();
-        setSelectedImg("");
-        setInputValue("");
-        setDefaultValue(1);
-        OnclickfetchSenderReceiverMsg(chatmasterid, userid);
-        setClearInputField(0);
-        setTogetblob('');
-        setDbsubtype('');
-        setText('');
-        setShowEmoji(false);
-      } else {
-        console.log(res);
+          handleClear();
+          setSelectedImg("");
+          setInputValue("");
+          setDefaultValue(1);
+          OnclickfetchSenderReceiverMsg(chatmasterid, userid, 0, 10);
+          setClearInputField(0);
+          setTogetblob("");
+          setDbsubtype("");
+          setText("");
+          setShowEmoji(false);
+        } else {
+          console.log(res);
+        }
       }
+    } catch (err) {
+      console.log("err", err);
     }
-  } catch (err) {
-    console.log("err", err);
-  }
- }
-
-//  const handleAudiocallRequest = async(e) => {
-//   e.preventDefault();
-//   try {
-//     const currentTime = new Date();
-//     const hours = currentTime.getHours();
-//     const minutes = currentTime.getMinutes();
-//     const ampm = hours >= 12 ? "pm" : "am";
-
-//     // Convert 24-hour format to 12-hour format
-//     const formattedHours = hours % 12 || 12;
-
-//     const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
-
-//     const formData = new FormData();
-//     formData.append("senderid", userid);
-//     formData.append("receiverid", clickedChatId);
-//     formData.append("type", "msg");
-//     formData.append("message", `${sessionUsers.firstname} ${sessionUsers.lastname}`);
-//     formData.append("time", formattedTime);
-//     formData.append("incoming", false); // Use boolean value instead of string
-//     formData.append("outgoing", true); // Use boolean value instead of string
-//     formData.append("subtype", 'AudiocallRequest');
-//     formData.append("chatmaster_id", chatmasterid);
-//     formData.append("image", '');
-//     formData.append("audio", '');
-//     formData.append("reply", "");
-//     formData.append("call_request", me);
-
-//     const axiosInstance = axios.create({
-//       headers: {
-//         "Content-Type": "multipart/form-data",
-//       },
-//     });
-//     socket.emit("send_message", {
-//       message: inputValue,
-//     });
-   
-    
-//     const res = await axiosInstance.post(
-//       `${chatserverUrl}/msgconversation`,
-//       formData
-//     );
-//     setInputValue("");
-//     setInputKey((prevKey) => prevKey + 1);
-//     setSelectedEmojis("");
-//     if (res.data) {
-//       if (res.data.code == 200) {
-
-//         setControlScrool(true);
-        
-//         handleClear();
-//         setSelectedImg("");
-//         setInputValue("");
-//         setDefaultValue(1);
-//         OnclickfetchSenderReceiverMsg(chatmasterid, userid);
-//         setClearInputField(0);
-//         setTogetblob('');
-//         setDbsubtype('');
-//         setText('');
-//         setShowEmoji(false);
-//       } else {
-//         console.log(res);
-//       }
-//     }
-//   } catch (err) {
-//     console.log("err", err);
-//   }
-//  }
+  };
 
 
 
-const handleForwardmessage = async(e) => {
-  // console.log(ForwardData);
-  // console.log(msgForwardData);
-  e.preventDefault();
-  try {
-    const axiosInstance = axios.create({
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+  const handleForwardmessage = async (e) => {
+    // console.log(ForwardData);
+    // console.log(msgForwardData);
+    e.preventDefault();
+    try {
+      const axiosInstance = axios.create({
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    const ampm = hours >= 12 ? "pm" : "am";
+      const currentTime = new Date();
+      const hours = currentTime.getHours();
+      const minutes = currentTime.getMinutes();
+      const ampm = hours >= 12 ? "pm" : "am";
 
-    // Convert 24-hour format to 12-hour format
-    const formattedHours = hours % 12 || 12;
+      // Convert 24-hour format to 12-hour format
+      const formattedHours = hours % 12 || 12;
 
-    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+      const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
 
-    const formData = new FormData();
-    formData.append("senderid", userid);
-    formData.append("receiverid", ForwardData.id);
-    formData.append("type", "msg");
-    formData.append("message", msgForwardData.message);
-    formData.append("time", formattedTime);
-    formData.append("incoming", false); // Use boolean value instead of string
-    formData.append("outgoing", true); // Use boolean value instead of string
-    formData.append("subtype", Dbsubtype);
-    formData.append("chatmaster_id", Forwardchatid);
-    formData.append("image", SelectedImg);
-    formData.append("audio", '');
-    formData.append("reply", inputValue);
-    formData.append("Msgtype", "Group");
+      const formData = new FormData();
+      formData.append("senderid", userid);
+      formData.append("receiverid", ForwardData.id);
+      formData.append("type", "msg");
+      formData.append("message", msgForwardData.message);
+      formData.append("time", formattedTime);
+      formData.append("incoming", false); // Use boolean value instead of string
+      formData.append("outgoing", true); // Use boolean value instead of string
+      formData.append("subtype", Dbsubtype);
+      formData.append("chatmaster_id", Forwardchatid);
+      formData.append("image", SelectedImg);
+      formData.append("audio", "");
+      formData.append("reply", inputValue);
+      formData.append("Msgtype", "User");
 
-    const res = await axiosInstance.post(
-      `${chatserverUrl}/msgconversation`,
-      formData
-    );
+      const res = await axiosInstance.post(
+        `${chatserverUrl}/msgconversation`,
+        formData
+      );
 
-    if (res.data) {
-      if (res.data.code == 200) {
-        setOpenReplyModel(0);
-        handleClear();
-        setSelectedImg("");
-        setOpenContactlist(0);
-        setForwardData(null);
-        setCheckboxStates({});
-        setSendForwardMsg(0);
-        setInputValue("");
-        setText("");
-       
-        setDbsubtype('');
-        fetchSenderReceiverMsg(chatmasterid, userid);
-        setInputKey((prevKey) => prevKey + 1);
-        toast.success(res.data.data.message);
-      } else {
-        console.log(res);
+      if (res.data) {
+        if (res.data.code == 200) {
+          setOpenReplyModel(0);
+          handleClear();
+          setSelectedImg("");
+          setOpenContactlist(0);
+          setForwardData(null);
+          setCheckboxStates({});
+          setSendForwardMsg(0);
+          setInputValue("");
+          setText("");
+
+          setDbsubtype("");
+          fetchSenderReceiverMsg(chatmasterid, userid);
+          setInputKey((prevKey) => prevKey + 1);
+          toast.success(res.data.data.message);
+        } else {
+          console.log(res);
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-  }
-  
-}
-
-
-
-
+  };
 
   const onEmojiClicks = (emoji) => {};
 
@@ -1694,7 +1617,7 @@ const handleForwardmessage = async(e) => {
           setInputValue("");
           setText("");
           setControlScrool(false);
-          setScroolvalue('scroolup');
+          setScroolvalue("scroolup");
           setInputKey((prevKey) => prevKey + 1);
         } else {
           console.log(res);
@@ -1739,9 +1662,9 @@ const handleForwardmessage = async(e) => {
           setSelectedImg("");
           setInputValue("");
           setText("");
-          
+
           setControlScrool(false);
-          setScroolvalue('scroolup');
+          setScroolvalue("scroolup");
           fetchSenderReceiverMsg(chatmasterid, userid);
           setInputKey((prevKey) => prevKey + 1);
         } else {
@@ -1777,10 +1700,10 @@ const handleForwardmessage = async(e) => {
       if (res.data) {
         if (res.data.code == 200) {
           setSelectedImg("");
-          OnclickfetchSenderReceiverMsg(chatmasterid, userid);
+          OnclickfetchSenderReceiverMsg(chatmasterid, userid, 0, 10);
           setInputValue("");
           setText("");
-       
+
           setControlScrool(true);
           setInputKey((prevKey) => prevKey + 1);
         } else {
@@ -1796,7 +1719,7 @@ const handleForwardmessage = async(e) => {
     setMsgForwardData(data);
     // console.log("open contact list");
     setOpenContactlist(1);
-    setDbsubtype('forward');
+    setDbsubtype("forward");
   };
 
   const closeContactlist = () => {
@@ -1806,53 +1729,64 @@ const handleForwardmessage = async(e) => {
     setSendForwardMsg(0);
   };
 
-  const handleScroll = () => {
+  const handleScroll = (event) => {
+    event.preventDefault(); // Prevent default behavior of the scroll event
+  
+    const { scrollTop, scrollHeight, clientHeight } = scrollbarsRef.current.view;
+    const scrollThreshold = 50; // Adjust the threshold based on your preference
   
     const values = scrollbarsRef.current?.getValues();
- 
-    setDownarrow(1);
-   
-    // Check if the user has scrolled to the bottom
-    if (
-      values &&
-      values.top !== undefined &&
-      values.top >= 0.9996941709372611
-    ) {
-      // console.log("Scroll position from the top:", values.top);
-
-      // Check if the user has scrolled to the bottom (adjust threshold as needed)
-      const isAtBottom = values.top >= 0.95;
-
-      if (isAtBottom) {
-        setDownarrow(0);
+    console.log(values);
+  
+    // Check if the user is actively scrolling
+    const isScrollingUp = scrollTop <= scrollThreshold;
+  
+    if (isScrollingUp) {
+      // Fetch more messages only if not already fetching
+      if (!fetchingMoreMessages) {
+        setFetchingMoreMessages(true); // Set the flag to indicate fetching is in progress
+  
+        const newOffset = chathistory.length;
+        const newLimit = 10;
+  
+        OnclickfetchSenderReceiverMsg(chatmasterid, userid, newOffset, newLimit)
+          .then(() => setFetchingMoreMessages(false)) // Reset the flag after fetch
+          .catch((error) => {
+            console.error("Error fetching more messages:", error);
+            setFetchingMoreMessages(false); // Reset the flag on error
+          });
       }
     }
+  
+    setDownarrow(1);
+  
+    // Check if the user has scrolled to the bottom
+    const isAtBottom = values.top >= 0.95;
+  
+    if (isAtBottom) {
+      setDownarrow(0);
+    }
   };
+  
+
+
 
   const handleDownarrow = () => {
     // console.log("down arrow");
     scrollbarsRef.current.scrollToBottom({ behavior: "smooth" });
-    
   };
 
-
-  
-
-
   const showNotification = () => {
-    if ('Notification' in window) {
+    if ("Notification" in window) {
       Notification.requestPermission().then((permission) => {
-        if (permission === 'granted') {
-          new Notification('This is a notification!');
+        if (permission === "granted") {
+          new Notification("This is a notification!");
         }
       });
     } else {
-      alert('Notifications not supported in this browser.');
+      alert("Notifications not supported in this browser.");
     }
   };
-
-
-  
 
   // console.log('fetched chatmaster id idb',chatmasterid);
   return (
@@ -1871,20 +1805,17 @@ const handleForwardmessage = async(e) => {
         }}
       >
         <Stack p={3} spacing={2} sx={{ height: "100vh" }}>
-         
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <IconButton>
+              <CircleDashed />
+            </IconButton>
+          </Stack>
 
-       
-
-          <Stack spacing={1}>
-          <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                    <Typography variant='subtitle2' >Create New Group</Typography>
-                    <IconButton onClick={() =>{setOpenDialog(true)}}>
-                        <Plus style={{color: theme.palette.primary.main}}/>
-                    </IconButton>
-                </Stack>
-            <Stack direction="row" alignItems="center" spacing={1.5}>
-
-            <Stack sx={{ width: "100%" }}>
+          <Stack sx={{ width: "100%" }}>
             <Search>
               <SearchIconWrapper>
                 <MagnifyingGlass color="#709CE6" />
@@ -1897,48 +1828,43 @@ const handleForwardmessage = async(e) => {
               />
             </Search>
           </Stack>
-              
+
+          <Stack spacing={1}>
+            <Stack direction="row" alignItems="center" spacing={1.5}>
+              <ArchiveBox size={24} />
+              <Button>Archive</Button>
             </Stack>
             <Divider />
           </Stack>
-          <Typography variant='subtitle2' sx={{color:'#676667'}}>All Groups</Typography>
+
           <Stack
             className="scrollbar"
             spacing={2}
             direction="column"
             sx={{ flexGrow: 1, overflow: "scroll", height: "100%" }}
           >
-
-{
-  filteredData.length === 0 ? (
-    <p>No Group</p>
-  ) : (
-    <Stack spacing={2.4}>
-      {filteredData.map((el) => (
-        <ChatElement
-          key={el.id}
-          {...el}
-          datas={el}
-          onClick={(e) =>
-            handleChatClick(
-              el.chatmasterid,
-              userid,
-              el.id,
-              el.img,
-              el.name,
-              e,
-              'loading'
-            )
-          }
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
-      ))}
-    </Stack>
-  )
-}
-
-           
+            <Stack spacing={2.4}>
+              {filteredData.map((el) => (
+                <ChatElement
+                  key={el.id}
+                  {...el}
+                  datas={el}
+                  onClick={(e) =>
+                    handleChatClick(
+                      el.chatmasterid,
+                      userid,
+                      el.id,
+                      el.img,
+                      el.name,
+                      e,
+                      "loading"
+                    )
+                  }
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                />
+              ))}
+            </Stack>
           </Stack>
         </Stack>
       </Box>
@@ -1955,7 +1881,11 @@ const handleForwardmessage = async(e) => {
       >
         {chatspace ? (
           <>
-          <Stack height={"100%"} maxHeight={"100vh"} width={"auto"}>
+            {joinchatmaster === 1 ? (
+              <>
+                {/* <Conversation/> */}
+
+                <Stack height={"100%"} maxHeight={"100vh"} width={"auto"}>
                   {/* Chat header */}
                   <Header
                     profilepic={profileImg}
@@ -1972,108 +1902,93 @@ const handleForwardmessage = async(e) => {
                   />
                   {/* Msg */}
 
-
-
                   {loading ? (
-                    <Loader style={{
-  backdropFilter: 'blur(10px)'
-}} />
-      ) : (
-        <Scrollbars
-        onKeyDown={handleKeyDown}
-                    onScroll={(values) => handleScroll(values)}
-                    ref={scrollbarsRef}
-                    autoHide
-                    autoHideTimeout={1000}
-                    autoHideDuration={200}
-                    autoHeight
-                    autoHeightMax="100%"
-                    style={{
-                      width: "100%",
-                      height: "100vh",
-                      backgroundImage:
-                        "url('https://as1.ftcdn.net/v2/jpg/01/99/79/88/1000_F_199798806_PAFfWGapie6Mk8igqKHbhIIa9LwQcvQr.jpg')",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundAttachment: "fixed",
-                    }}
-                    renderThumbVertical={({ style, ...props }) => (
-                      <div
-                        {...props}
-                        style={{
-                          ...style,
-                          backgroundColor: "#888",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    )}
-                  >
-                 
-                    <div>
+                    <Loader
+                      style={{
+                        backdropFilter: "blur(10px)",
+                      }}
+                    />
+                  ) : (
+                    <Scrollbars
+                      onKeyDown={handleKeyDown}
+                      onScroll={(values) => handleScroll(values)}
+                      ref={scrollbarsRef}
+                      autoHide
+                      autoHideTimeout={1000}
+                      autoHideDuration={200}
+                      autoHeight
+                      autoHeightMax="100%"
+                      style={{
+                        width: "100%",
+                        height: "100vh",
+                        backgroundImage:
+                          "url('https://as1.ftcdn.net/v2/jpg/01/99/79/88/1000_F_199798806_PAFfWGapie6Mk8igqKHbhIIa9LwQcvQr.jpg')",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundAttachment: "fixed",
+                      }}
+                      renderThumbVertical={({ style, ...props }) => (
+                        <div
+                          {...props}
+                          style={{
+                            ...style,
+                            backgroundColor: "#888",
+                            borderRadius: "6px",
+                          }}
+                        />
+                      )}
+                    >
+                      <div>
+                        <Message
+                          menu={true}
+                          senderid={userid}
+                          receiverid={clickedChatId}
+                          chathistory={chathistory}
+                          handelmaindelete={handelmaindelete}
+                          ReplyMsgs={ReplyMsgs}
+                          onEmojiClicks={onEmojiClicks}
+                          getemoj={getemoj}
+                          closeEmoji={false}
+                          handlestar={handlestar}
+                          star={star}
+                          setStar={setStar}
+                          searchTerm={searchTerm}
+                          handleUnstar={handleUnstar}
+                          openModal={openModal}
+                          openModalImg={openModalImg}
+                          handelModelClose={handelModelClose}
+                          handleModelImage={handleModelImage}
+                          setInputValue={setInputValue}
+                          editModel={editModel}
+                          handleEdit={handleEdit}
+                          EditData={EditData}
+                          closeEditdata={closeEditdata}
+                          openContactlist={openContactlist}
+                          OpenContact={OpenContact}
+                          data={data}
+                          closeContactlist={closeContactlist}
+                          Downarrow={Downarrow}
+                          handleDownarrow={handleDownarrow}
+                          OpenReplyModel={OpenReplyModel}
+                          Replydata={Replydata}
+                          handleCheckboxChange={handleCheckboxChange}
+                          checkboxStates={checkboxStates}
+                          LoaderOn={LoaderOn}
+                          setLoaderOn={setLoaderOn}
+                          closeReplydata={closeReplydata}
+                          addEmoji={addEmoji}
+                          showEmoji={showEmoji}
+                          setOpenAction={setOpenAction}
+                          openAudioCall={openAudioCall}
+                          setOffscroolbar={setOffscroolbar}
+                        />
+                      </div>
+                    </Scrollbars>
+                  )}
 
-                   
-                     
-                       <Message
-                        menu={true}
-                        senderid={userid}
-                        receiverid={clickedChatId}
-                        chathistory={chathistory}
-                        handelmaindelete={handelmaindelete}
-                        ReplyMsgs={ReplyMsgs}
-                        onEmojiClicks={onEmojiClicks}
-                        getemoj={getemoj}
-                        closeEmoji={false}
-                        handlestar={handlestar}
-                        star={star}
-                        setStar={setStar}
-                        searchTerm={searchTerm}
-                        handleUnstar={handleUnstar}
-                        openModal={openModal}
-                        openModalImg={openModalImg}
-                        handelModelClose={handelModelClose}
-                        handleModelImage={handleModelImage}
-                        setInputValue={setInputValue}
-                        editModel={editModel}
-                        handleEdit={handleEdit}
-                        EditData={EditData}
-                        closeEditdata={closeEditdata}
-                        openContactlist={openContactlist}
-                        OpenContact={OpenContact}
-                        data={data}
-                        closeContactlist={closeContactlist}
-                        Downarrow={Downarrow}
-                        handleDownarrow={handleDownarrow}
-                        OpenReplyModel={OpenReplyModel}
-                        Replydata={Replydata}
-                        handleCheckboxChange={handleCheckboxChange}
-                        checkboxStates={checkboxStates}
-                        LoaderOn={LoaderOn}
-                        setLoaderOn={setLoaderOn}
-                        closeReplydata={closeReplydata}
-                        addEmoji={addEmoji}
-                        showEmoji={showEmoji}
-                        setOpenAction={setOpenAction}
-                        openAudioCall={openAudioCall}
-                        setOffscroolbar={setOffscroolbar}
-                        
-                      /> 
-                    </div>
-
-          
-                  </Scrollbars>
-      )}
-
-
-
-                  
-
-
-
-                 
                   {/* Chat footer */}
                   {/* <Footer senderid={userid} receiverid={clickedChatId}/> */}
-                 
-                 
+
                   {/* <Options>
               <Notifications />
             </Options> */}
@@ -2090,10 +2005,6 @@ const handleForwardmessage = async(e) => {
                   >
                     <Stack direction="row" alignItems={"center"} spacing={3}>
                       <Stack sx={{ width: "100%" }}>
-
-                    
-
-
                         {/* Chat Input */}
                         <Box
                           sx={{
@@ -2106,31 +2017,25 @@ const handleForwardmessage = async(e) => {
                           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                         ></Box>
 
-                        <div style={{ display: "flex" }}>
-      
-      </div>
+                        <div style={{ display: "flex" }}></div>
 
                         {editModel === 1 || OpenReplyModel === 1 ? (
                           <TextField
                             required
-                           
                             label="Required"
-                            defaultValue={EditData ? EditData.message : ''}
+                            defaultValue={EditData ? EditData.message : ""}
                             onChange={(e) => setInputValue(e.target.value)}
                             autoFocus
                           />
                         ) : (
                           <>
-
-                         
-                         
                             <ChatInput
-                            showEmoji={showEmoji}
-                           setShowEmoji={setShowEmoji}
-                           handleInputChange={handleInputChange}
-                            addEmoji={addEmoji}
-                            setText={setText}
-                            text={text}
+                              showEmoji={showEmoji}
+                              setShowEmoji={setShowEmoji}
+                              handleInputChange={handleInputChange}
+                              addEmoji={addEmoji}
+                              setText={setText}
+                              text={text}
                               setOpenPicker={setOpenPicker}
                               handleChange={handleChange}
                               handleClear={handleClear}
@@ -2164,8 +2069,6 @@ const handleForwardmessage = async(e) => {
                               selectedEmojis={selectedEmojis}
                               setOpenAction={setOpenAction}
                               openAction={openAction}
-
-                              
                             />
                           </>
                         )}
@@ -2188,43 +2091,60 @@ const handleForwardmessage = async(e) => {
                             justifyContent: "center",
                           }}
                         >
-                       <IconButton>
-                         {SendForwardMsg == 1 ? (
-                         <PaperPlaneTilt color="#fff" onClick={handleForwardmessage} />
-                         ) : inputValue.length === 0 ? (
-                         Audio ? (
-                           <PaperPlaneTilt color="#fff" onClick={handleSendmessage} />
-                         ) : editModel === 1 ? (
-                           <Check color="#fff" onClick={handleCloseEdit} />
-                         ) : (
-                           <Microphone color="#fff" onClick={handlemicrophone} />
-                         )
-                         ) : OpenReplyModel === 1 ? (
-                           <PaperPlaneTilt color="#fff" onClick={(e) => handlesendReply(e)} />
-                         ) : editModel === 1 ? (
-                           <Check color="#fff" onClick={handleCloseEdit} />
-                         ) : (
-                           <PaperPlaneTilt color="#fff" onClick={handleSendmessage} />
-                         )}
-                       </IconButton>
-
-                        
-                       
-
+                          <IconButton>
+                            {SendForwardMsg == 1 ? (
+                              <PaperPlaneTilt
+                                color="#fff"
+                                onClick={handleForwardmessage}
+                              />
+                            ) : inputValue.length === 0 ? (
+                              Audio ? (
+                                <PaperPlaneTilt
+                                  color="#fff"
+                                  onClick={handleSendmessage}
+                                />
+                              ) : editModel === 1 ? (
+                                <Check color="#fff" onClick={handleCloseEdit} />
+                              ) : (
+                                <Microphone
+                                  color="#fff"
+                                  onClick={handlemicrophone}
+                                />
+                              )
+                            ) : OpenReplyModel === 1 ? (
+                              <PaperPlaneTilt
+                                color="#fff"
+                                onClick={(e) => handlesendReply(e)}
+                              />
+                            ) : editModel === 1 ? (
+                              <Check color="#fff" onClick={handleCloseEdit} />
+                            ) : (
+                              <PaperPlaneTilt
+                                color="#fff"
+                                onClick={handleSendmessage}
+                              />
+                            )}
+                          </IconButton>
                         </Stack>
                       </Box>
                     </Stack>
                   </Box>
                 </Stack>
+              </>
+            ) : (
+              <>
+                <StartChat onClick={handleChatMaster} />
+              </>
+            )}
           </>
         ) : (
-          <div><Welcome /></div>
+          <div>
+            <Welcome />
+          </div>
         )}
       </Box>
-      {openDialog && <CreateGroup open={openDialog} setOpenDialog={setOpenDialog} setData={setData} />}
-
     </Stack>
   );
 };
 
-export default Group;
+export default GeneralApp;

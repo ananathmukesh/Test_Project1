@@ -11,7 +11,7 @@ import {
   Video,
   Audio,
   ForwardMsg,
-  TextWithEmojiMsg,
+
   CallRequest,
   AudioCallRequest
 } from "./MsgTypes";
@@ -30,7 +30,8 @@ import Notifications from "../notifications/notifications.component";
 import Options from "../options/options.component";
 import VideoPlayer from "../videoplayer/videoPlayer.component";
 import Loader from "../../utils/loader";
-
+import { senderreceiverImg,senderreceiverVideo,senderreceiverDoc } from "../../config/ServerUrl";
+import ReactPlayer from "react-player";
 
 const Message = ({
   menu,
@@ -99,14 +100,16 @@ const Message = ({
       
     };
 
+    
     getTimeline();
+
+    
   }, []);
 
  
 
 
 
-  console.log(chathistory);
 
 
 
@@ -132,8 +135,22 @@ const Message = ({
 
 
 
+  const getFileType = (url) => {
+    if (url) {
+      const extension = url.split('.').pop().toLowerCase();
 
+      if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'gif') {
+        return 'image';
+      } else if (extension === 'mp4' || extension === 'webm' || extension === 'ogg') {
+        return 'video';
+      } else {
+        return 'document';
+      }
+    }
+    return 'unknown'; // or handle it differently based on your needs
+  };
 
+  const fileType = getFileType(Replydata.img);
 
   return (
     <>
@@ -307,26 +324,7 @@ const Message = ({
                         senderid={senderid}
                       />
                     );
-                    case "textwithemoji":
-                    return (
-                      <TextWithEmojiMsg
-                        el={el}
-                        menu={menu}
-                        searchTerm={searchTerm}
-                        setAnchorEls={0}
-                        handelmaindelete={handelmaindelete}
-                        ReplyMsgs={ReplyMsgs}
-                        getemoj={getemoj}
-                        closeEmoji={closeEmoji}
-                        handlestar={handlestar}
-                        star={star}
-                        setStar={setStar}
-                        handleUnstar={handleUnstar}
-                        handleEdit={handleEdit}
-                        openContactlist={openContactlist}
-                        senderid={senderid}
-                      />
-                    );
+                    
                     case "callRequest":
                     return (
                       <CallRequest
@@ -449,13 +447,16 @@ const Message = ({
 
     {
 
+
+    
+
       OpenReplyModel === 1 ? (
   <Box
       sx={{
         width: '72%',
-        height: 60,
+        height: '60%',
         bottom: 0,
-        backgroundColor: '#369ed8',
+        backgroundColor: '#bed6f4',
         position: 'fixed',
         zIndex: 999,
         display: 'flex',
@@ -467,8 +468,30 @@ const Message = ({
       }}
     >
       <div className="message" style={{ marginTop: '15px', marginLeft: '20px' }}>
-        {Replydata ? Replydata.message : null}
-      </div>
+      {
+        Replydata.img ? (
+          fileType === 'image' ? (
+            <img src={`${senderreceiverImg}/${Replydata.img}`} alt="Image" />
+          ) : fileType === 'video' ? (
+            <ReactPlayer
+              url={`${senderreceiverVideo}/${Replydata.img}`}
+              width="300px" // Set your desired width
+              height="200px"
+              controls // Set your desired height
+            />
+          ) : fileType === 'document' ? (
+            <iframe
+              src={`${senderreceiverDoc}/${Replydata.img}`}
+              width="100%"
+              height="300px"
+              title="Document Viewer"
+            ></iframe>
+          ) : null
+        ) : (
+          Replydata ? Replydata.message : null
+        )
+      }
+    </div>
 
       {/* Close button */}
       <IconButton

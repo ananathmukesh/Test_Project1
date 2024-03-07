@@ -18,6 +18,8 @@ const ChatElement = ({id,name, img, msg, time,online, unread, onClick, profilepi
       setSenderid(id);
     };
   
+    console.log(datas.msg);
+
    
     return (
       <Box sx={{
@@ -41,7 +43,10 @@ const ChatElement = ({id,name, img, msg, time,online, unread, onClick, profilepi
                 {name}
               </Typography>
               <Typography variant='caption'>
-                {msg}
+              {
+              datas.msg && datas.msg.length > 20 ? `${datas.msg.substring(0, 15)}......` : datas.msg
+              }
+
               </Typography>
             </Stack>
             </Stack>
